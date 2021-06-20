@@ -33,24 +33,36 @@ public class EditorFormController {
         pneReplace.setVisible(false);
 
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-            FXUtil.highlightOnTextArea(txtEditor,newValue, Color.web("yellow", 0.8));
-
-            try {
-                Pattern regExp = Pattern.compile(newValue);
-                Matcher matcher = regExp.matcher(txtEditor.getText());
-
-                searchList.clear();
-
-                while (matcher.find()) {
-                    searchList.add(new Index(matcher.start(), matcher.end()));
-                }
-                findOffset = -1;
-                txtEditor.deselect();
-            } catch (PatternSyntaxException e) {
-            }
+            findAll(newValue);
         });
 
+        txtSearchForReplace.textProperty().addListener((observable, oldValue, newValue) -> {
+            findAll(newValue);
+        });
+
+        pneFind.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println(newValue);
+        });
     }
+
+    private void findAll(String newValue) {
+        FXUtil.highlightOnTextArea(txtEditor,newValue, Color.web("yellow", 0.8));
+
+        try {
+            Pattern regExp = Pattern.compile(newValue);
+            Matcher matcher = regExp.matcher(txtEditor.getText());
+
+            searchList.clear();
+
+            while (matcher.find()) {
+                searchList.add(new Index(matcher.start(), matcher.end()));
+            }
+            findOffset = -1;
+            txtEditor.deselect();
+        } catch (PatternSyntaxException e) {
+        }
+    }
+
 
     public void mnuItemNew_OnAction(ActionEvent actionEvent) {
         txtEditor.clear();
@@ -70,12 +82,17 @@ public class EditorFormController {
 
     private void viewSearchOrReplace(AnchorPane anchorPane){
         ObservableList<Node> children = pneVBox.getChildren();
-        if (children.get(0) != anchorPane) {
-            FXCollections.reverse(children);
+        if (children.get(0) == anchorPane) {
+            children.get(0).setVisible(true);
+            ((AnchorPane) children.get(0)).getChildren().get(0).requestFocus();
+            return;
         }
+        pneVBox.getChildren().clear();
+        pneVBox.getChildren().add(anchorPane);
         children.get(0).setVisible(true);
-        children.get(1).setVisible(false);
-        ((AnchorPane)children.get(0)).getChildren().get(0).requestFocus();
+        TextField textField = (TextField) ((AnchorPane) children.get(0)).getChildren().get(0);
+        textField.requestFocus();
+        findAll(textField.getText());
     }
 
     public void mnuItemSelectAll_OnAction(ActionEvent actionEvent) {

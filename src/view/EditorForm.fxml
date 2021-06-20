@@ -72,37 +72,30 @@
       </MenuBar>
       <TextArea fx:id="txtEditor" layoutX="60.0" layoutY="70.0" prefHeight="200.0" prefWidth="200.0" text="id you know the &#10;id you know the word ‘essay’ is derived from a Latin word ‘exagium’, which roughly translates to presenting one’s case? So essays are a short piece of writing representing one’s side of the argument or one’s experiences, stories, etc. Essays are very personalized. So let us learn about types of essays, format, and tips for essay-writing.&#10;id you know the word ‘essay’ is derived from a Latin word ‘exagium’, which roughly translates to presenting one’s case? So essays are a short piece of writing representing one’s side of the argument or one’s experiences, stories, etc. Essays are very personalized. So let us learn about types of essays, format, and tips for essay-writing.&#10;id you know the word ‘essay’ is derived from a Latin word ‘exagium’, which roughly translates to presenting one’s case? So essays are a short piece of writing representing one’s side of the argument or one’s experiences, stories, etc. Essays are very personalized. So let us learn about types of essays, format, and tips for essay-writing.&#10;id you know the word ‘essay’ is derived from a Latin word ‘exagium’, which roughly translates to presenting one’s case? So essays are a short piece of writing representing one’s side of the argument or one’s experiences, stories, etc. Essays are very personalized. So let us learn about types of essays, format, and tips for essay-writing.&#10;&#10;word ‘essay’ is derived from a Latin word ‘exagium’, which roughly translates to presenting one’s case? So essays are a short piece of writing representing one’s side of the argument or one’s experiences, stories, etc. Essays are very personalized. So let us learn about types of essays, format, and tips for essay-writing." wrapText="true" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="39.0" />
       <ToolBar layoutX="14.0" layoutY="360.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <AnchorPane fx:id="pneReplace" focusTraversable="true" prefHeight="140.0" prefWidth="342.0" style="-fx-background-color: grey;">
+         <children>
+            <TextField fx:id="txtSearchForReplace" layoutX="32.0" layoutY="17.0" prefHeight="26.0" prefWidth="281.0" promptText="Search" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0" />
+            <TextField fx:id="txtReplace" layoutX="20.0" layoutY="57.0" prefHeight="26.0" prefWidth="281.0" promptText="Search" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="55.0" />
+            <Button layoutX="42.0" layoutY="92.0" mnemonicParsing="false" onAction="#btnFind_OnAction" text="Find" />
+            <Button layoutX="99.0" layoutY="92.0" mnemonicParsing="false" onAction="#btnReplace_OnAction" text="Replace" />
+            <Button layoutX="184.0" layoutY="92.0" mnemonicParsing="false" onAction="#btnReplaceAll_OnAction" text="Replace All" />
+         </children>
+         <padding>
+            <Insets right="10.0" />
+         </padding>
+      </AnchorPane>
       <VBox fx:id="pneVBox" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0">
          <children>
-            <AnchorPane fx:id="pneFind" prefHeight="60.0" prefWidth="340.0" style="-fx-background-color: grey;">
+            <AnchorPane fx:id="pneFind" focusTraversable="true" prefHeight="60.0" prefWidth="340.0" style="-fx-background-color: grey;">
                <children>
                   <TextField fx:id="txtSearch" layoutX="32.0" layoutY="17.0" promptText="Search" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="140.0" />
                   <Button layoutX="212.0" layoutY="17.0" mnemonicParsing="false" onAction="#btnFindNext_OnAction" prefHeight="26.0" prefWidth="55.0" text="↓" />
                   <Button layoutX="277.0" layoutY="17.0" mnemonicParsing="false" onAction="#btnFindPrevious_OnAction" prefHeight="26.0" prefWidth="55.0" text="↑" />
                </children>
-               <VBox.margin>
-                  <Insets right="1.0" />
-               </VBox.margin>
                <padding>
                   <Insets right="10.0" />
                </padding>
             </AnchorPane>
-            <AnchorPane fx:id="pneReplace" prefHeight="140.0" prefWidth="342.0" style="-fx-background-color: grey;">
-               <children>
-                  <TextField fx:id="txtSearchForReplace" layoutX="32.0" layoutY="17.0" prefHeight="26.0" prefWidth="281.0" promptText="Search" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0" />
-                  <Button layoutX="42.0" layoutY="92.0" mnemonicParsing="false" onAction="#btnFind_OnAction" text="Find" />
-                  <Button layoutX="99.0" layoutY="92.0" mnemonicParsing="false" onAction="#btnReplace_OnAction" text="Replace" />
-                  <Button layoutX="184.0" layoutY="92.0" mnemonicParsing="false" onAction="#btnReplaceAll_OnAction" text="Replace All" />
-                  <TextField fx:id="txtReplace" layoutX="20.0" layoutY="57.0" prefHeight="26.0" prefWidth="281.0" promptText="Search" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="55.0" />
-               </children>
-               <padding>
-                  <Insets right="10.0" />
-               </padding>
-               <VBox.margin>
-                  <Insets right="1.0" />
-               </VBox.margin>
-            </AnchorPane>
-         </children>
-      </VBox>
+         </children></VBox>
    </children>
 </AnchorPane>
