@@ -1,6 +1,5 @@
 package controller;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -18,6 +17,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 public class EditorFormController {
+    private final List<Index> searchList = new ArrayList<>();
     public AnchorPane pneReplace;
     public AnchorPane pneFind;
     public TextField txtSearchForReplace;
@@ -26,7 +26,6 @@ public class EditorFormController {
     public TextArea txtEditor;
     public VBox pneVBox;
     private int findOffset = -1;
-    private final List<Index> searchList = new ArrayList<>();
 
     public void initialize() {
         pneFind.setVisible(false);
@@ -49,7 +48,7 @@ public class EditorFormController {
     }
 
     private void findAll(String newValue) {
-        FXUtil.highlightOnTextArea(txtEditor,newValue, Color.web("yellow", 0.8));
+        FXUtil.highlightOnTextArea(txtEditor, newValue, Color.web("yellow", 0.8));
 
         try {
             Pattern regExp = Pattern.compile(newValue);
@@ -83,7 +82,7 @@ public class EditorFormController {
         viewSearchOrReplace(pneReplace);
     }
 
-    private void viewSearchOrReplace(AnchorPane anchorPane){
+    private void viewSearchOrReplace(AnchorPane anchorPane) {
         ObservableList<Node> children = pneVBox.getChildren();
         if (children.get(0) == anchorPane) {
             children.get(0).setVisible(true);
@@ -102,38 +101,42 @@ public class EditorFormController {
     }
 
     public void btnFindNext_OnAction(ActionEvent actionEvent) {
-        if (!searchList.isEmpty()) {
-            findOffset++;
-            if (findOffset >= searchList.size()) {
-                findOffset = 0;
-            }
-            txtEditor.selectRange(searchList.get(findOffset).startingIndex, searchList.get(findOffset).endIndex);
-        }
+        find(true);
     }
 
     public void btnFindPrevious_OnAction(ActionEvent actionEvent) {
+        find(false);
+    }
+
+    public void btnFind_OnAction(ActionEvent actionEvent) {
+        find(true);
+    }
+
+    private void find(boolean forwardSearch) {
+        int toggle = forwardSearch ? 1 : -1;
+
         if (!searchList.isEmpty()) {
-            findOffset--;
-            if (findOffset < 0) {
+            findOffset += toggle;
+            if (findOffset >= searchList.size()) {
+                findOffset = 0;
+            } else if (findOffset < 0) {
                 findOffset = searchList.size() - 1;
             }
             txtEditor.selectRange(searchList.get(findOffset).startingIndex, searchList.get(findOffset).endIndex);
         }
     }
 
-
-
-    public void btnFind_OnAction(ActionEvent actionEvent) {
-        if (!searchList.isEmpty()) {
-            findOffset++;
-            if (findOffset >= searchList.size()) {
-                findOffset = 0;
-            }
-            txtEditor.selectRange(searchList.get(findOffset).startingIndex, searchList.get(findOffset).endIndex);
-        }
-    }
-
     public void btnReplace_OnAction(ActionEvent actionEvent) {
+        if (txtEditor.getSelectedText().isEmpty()) {
+            find(true);
+            System.out.println(txtEditor.getCaretPosition());
+            return;
+        }
+        System.out.println(txtEditor.getCaretPosition());
+        String replacedText = txtEditor.getText().substring(0, searchList.get(findOffset).startingIndex)+txtEditor.getText().substring(searchList.get(findOffset).endIndex);
+        txtEditor.setText(replacedText);
+        System.out.println(txtEditor.getCaretPosition());
+        findAll(txtSearchForReplace.getText());
     }
 
     public void btnReplaceAll_OnAction(ActionEvent actionEvent) {
@@ -141,7 +144,7 @@ public class EditorFormController {
             txtSearchForReplace.requestFocus();
             return;
         }
-        String output = txtEditor.getText().replaceAll(txtSearchForReplace.getText(),txtReplace.getText());
+        String output = txtEditor.getText().replaceAll(txtSearchForReplace.getText(), txtReplace.getText());
         txtEditor.setText(output);
         findAll("");
     }
