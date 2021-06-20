@@ -59,7 +59,14 @@ public class EditorFormController {
             while (matcher.find()) {
                 searchList.add(new Index(matcher.start(), matcher.end()));
             }
-            findOffset = -1;
+
+            for (Index index : searchList) {
+                if (index.startingIndex > txtEditor.getCaretPosition()) {
+                    findOffset = searchList.indexOf(index) - 1;
+                    break;
+                }
+            }
+
             txtEditor.deselect();
         } catch (PatternSyntaxException e) {
         }
@@ -131,8 +138,8 @@ public class EditorFormController {
             forwardSearch(true);
             return;
         }
-        int caretPosition = txtEditor.getCaretPosition()-txtEditor.getSelectedText().length()+txtReplace.getText().length();
-        String replacedText = txtEditor.getText().substring(0, searchList.get(findOffset).startingIndex) +txtReplace.getText()+ txtEditor.getText().substring(searchList.get(findOffset).endIndex);
+        int caretPosition = txtEditor.getCaretPosition() - txtEditor.getSelectedText().length() + txtReplace.getText().length();
+        String replacedText = txtEditor.getText().substring(0, searchList.get(findOffset).startingIndex) + txtReplace.getText() + txtEditor.getText().substring(searchList.get(findOffset).endIndex);
         txtEditor.setText(replacedText);
         txtEditor.positionCaret(caretPosition);
         findAll(txtSearchForReplace.getText());
