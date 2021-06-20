@@ -1,6 +1,5 @@
 package controller;
 
-import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -48,9 +47,9 @@ public class EditorFormController {
                 Node children = pneVBox.getChildren().get(0);
 
                 double paneHeight = ((AnchorPane) children).getHeight();
-                TranslateTransition paneAppearAnimation = new TranslateTransition(new Duration((paneHeight+100)/2*3),children);
+                TranslateTransition paneAppearAnimation = new TranslateTransition(new Duration((paneHeight + 100) / 2 * 3), children);
                 paneAppearAnimation.setFromY(-29);
-                paneAppearAnimation.setToY(-paneHeight -29);
+                paneAppearAnimation.setToY(-paneHeight - 29);
                 paneAppearAnimation.play();
                 paneAppearAnimation.setOnFinished(event -> children.setVisible(false));
             }
@@ -109,8 +108,8 @@ public class EditorFormController {
             findAll(textField.getText());
 
             double paneHeight = ((AnchorPane) children.get(0)).getHeight();
-            TranslateTransition paneAppearAnimation = new TranslateTransition(new Duration((paneHeight+100)/2*3),children.get(0));
-            paneAppearAnimation.setFromY(-paneHeight -29);
+            TranslateTransition paneAppearAnimation = new TranslateTransition(new Duration((paneHeight + 100) / 2 * 3), children.get(0));
+            paneAppearAnimation.setFromY(-paneHeight - 29);
             paneAppearAnimation.setToY(-29);
             paneAppearAnimation.play();
             return;
