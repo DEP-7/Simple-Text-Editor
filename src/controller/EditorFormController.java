@@ -101,19 +101,19 @@ public class EditorFormController {
     }
 
     public void btnFindNext_OnAction(ActionEvent actionEvent) {
-        find(true);
+        forwardSearch(true);
     }
 
     public void btnFindPrevious_OnAction(ActionEvent actionEvent) {
-        find(false);
+        forwardSearch(false);
     }
 
     public void btnFind_OnAction(ActionEvent actionEvent) {
-        find(true);
+        forwardSearch(true);
     }
 
-    private void find(boolean forwardSearch) {
-        int toggle = forwardSearch ? 1 : -1;
+    private void forwardSearch(boolean value) {
+        int toggle = value ? 1 : -1;
 
         if (!searchList.isEmpty()) {
             findOffset += toggle;
@@ -128,15 +128,15 @@ public class EditorFormController {
 
     public void btnReplace_OnAction(ActionEvent actionEvent) {
         if (txtEditor.getSelectedText().isEmpty()) {
-            find(true);
-            System.out.println(txtEditor.getCaretPosition());
+            forwardSearch(true);
             return;
         }
-        System.out.println(txtEditor.getCaretPosition());
-        String replacedText = txtEditor.getText().substring(0, searchList.get(findOffset).startingIndex)+txtEditor.getText().substring(searchList.get(findOffset).endIndex);
+        int caretPosition = txtEditor.getCaretPosition()-txtEditor.getSelectedText().length()+txtReplace.getText().length();
+        String replacedText = txtEditor.getText().substring(0, searchList.get(findOffset).startingIndex) +txtReplace.getText()+ txtEditor.getText().substring(searchList.get(findOffset).endIndex);
         txtEditor.setText(replacedText);
-        System.out.println(txtEditor.getCaretPosition());
+        txtEditor.positionCaret(caretPosition);
         findAll(txtSearchForReplace.getText());
+        forwardSearch(true);
     }
 
     public void btnReplaceAll_OnAction(ActionEvent actionEvent) {
