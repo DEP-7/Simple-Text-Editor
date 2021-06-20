@@ -40,8 +40,11 @@ public class EditorFormController {
             findAll(newValue);
         });
 
-        pneFind.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println(newValue);
+        txtEditor.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                findAll("");
+                pneVBox.getChildren().get(0).setVisible(false);
+            }
         });
     }
 
@@ -84,15 +87,14 @@ public class EditorFormController {
         ObservableList<Node> children = pneVBox.getChildren();
         if (children.get(0) == anchorPane) {
             children.get(0).setVisible(true);
-            ((AnchorPane) children.get(0)).getChildren().get(0).requestFocus();
+            TextField textField = (TextField) ((AnchorPane) children.get(0)).getChildren().get(0);
+            textField.requestFocus();
+            findAll(textField.getText());
             return;
         }
         pneVBox.getChildren().clear();
         pneVBox.getChildren().add(anchorPane);
-        children.get(0).setVisible(true);
-        TextField textField = (TextField) ((AnchorPane) children.get(0)).getChildren().get(0);
-        textField.requestFocus();
-        findAll(textField.getText());
+        viewSearchOrReplace(anchorPane);
     }
 
     public void mnuItemSelectAll_OnAction(ActionEvent actionEvent) {
@@ -119,13 +121,29 @@ public class EditorFormController {
         }
     }
 
+
+
     public void btnFind_OnAction(ActionEvent actionEvent) {
+        if (!searchList.isEmpty()) {
+            findOffset++;
+            if (findOffset >= searchList.size()) {
+                findOffset = 0;
+            }
+            txtEditor.selectRange(searchList.get(findOffset).startingIndex, searchList.get(findOffset).endIndex);
+        }
     }
 
     public void btnReplace_OnAction(ActionEvent actionEvent) {
     }
 
     public void btnReplaceAll_OnAction(ActionEvent actionEvent) {
+        if (txtSearchForReplace.getText().isEmpty()) {
+            txtSearchForReplace.requestFocus();
+            return;
+        }
+        String output = txtEditor.getText().replaceAll(txtSearchForReplace.getText(),txtReplace.getText());
+        txtEditor.setText(output);
+        findAll("");
     }
 }
 
