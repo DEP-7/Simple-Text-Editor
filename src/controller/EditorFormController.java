@@ -1,5 +1,7 @@
 package controller;
 
+import javafx.animation.Transition;
+import javafx.animation.TranslateTransition;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -8,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import util.FXUtil;
 
 import java.util.ArrayList;
@@ -42,7 +45,14 @@ public class EditorFormController {
         txtEditor.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 findAll("");
-                pneVBox.getChildren().get(0).setVisible(false);
+                Node children = pneVBox.getChildren().get(0);
+
+                double paneHeight = ((AnchorPane) children).getHeight();
+                TranslateTransition paneAppearAnimation = new TranslateTransition(new Duration((paneHeight+100)/2*3),children);
+                paneAppearAnimation.setFromY(-29);
+                paneAppearAnimation.setToY(-paneHeight -29);
+                paneAppearAnimation.play();
+                paneAppearAnimation.setOnFinished(event -> children.setVisible(false));
             }
         });
     }
@@ -82,25 +92,33 @@ public class EditorFormController {
     }
 
     public void mnuItemFind_OnAction(ActionEvent actionEvent) {
-        viewSearchOrReplace(pneFind);
+        showSearchBar(pneFind);
     }
 
     public void mnuItemReplace_OnAction(ActionEvent actionEvent) {
-        viewSearchOrReplace(pneReplace);
+        showSearchBar(pneReplace);
     }
 
-    private void viewSearchOrReplace(AnchorPane anchorPane) {
+    private void showSearchBar(AnchorPane anchorPane) {
         ObservableList<Node> children = pneVBox.getChildren();
+
         if (children.get(0) == anchorPane) {
             children.get(0).setVisible(true);
             TextField textField = (TextField) ((AnchorPane) children.get(0)).getChildren().get(0);
             textField.requestFocus();
             findAll(textField.getText());
+
+            double paneHeight = ((AnchorPane) children.get(0)).getHeight();
+            TranslateTransition paneAppearAnimation = new TranslateTransition(new Duration((paneHeight+100)/2*3),children.get(0));
+            paneAppearAnimation.setFromY(-paneHeight -29);
+            paneAppearAnimation.setToY(-29);
+            paneAppearAnimation.play();
             return;
         }
+
         pneVBox.getChildren().clear();
         pneVBox.getChildren().add(anchorPane);
-        viewSearchOrReplace(anchorPane);
+        showSearchBar(anchorPane);
     }
 
     public void mnuItemSelectAll_OnAction(ActionEvent actionEvent) {
