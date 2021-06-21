@@ -27,20 +27,21 @@ public class EditorFormController {
     public TextField txtReplace;
     public TextField txtSearch;
     public TextArea txtEditor;
-    public VBox pneVBox;
     public Label lblCaretLocation;
+    public Label lblWordCount;
+    public VBox pneVBox;
     private int findOffset = -1;
 
     public void initialize() {
         pneFind.setVisible(false);
         pneReplace.setVisible(false);
 
+        setWordCount();
+
         txtEditor.caretPositionProperty().addListener((observable, oldValue, newValue) -> {
-//            System.out.println(newValue);
-//            System.out.println("a       s d".split("[\\s]+").length);
-            String[] rows = (txtEditor.getText()+" ").split("\\n");
+            String[] rows = (txtEditor.getText() + " ").split("\\n");
             int columnNumber = txtEditor.getCaretPosition();
-            System.out.println(columnNumber);
+
             for (int i = 0; i < rows.length; i++) {
                 if (columnNumber <= rows[i].length()) {
                     lblCaretLocation.setText("Line " + (i + 1) + " Col " + (columnNumber + 1));
@@ -48,7 +49,6 @@ public class EditorFormController {
                 }
                 columnNumber -= rows[i].length() + 1;
             }
-            System.out.println(rows.length);
         });
 
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -57,6 +57,10 @@ public class EditorFormController {
 
         txtSearchForReplace.textProperty().addListener((observable, oldValue, newValue) -> {
             findAll(newValue);
+        });
+
+        txtEditor.textProperty().addListener(observable -> {
+            setWordCount();
         });
 
         txtEditor.focusedProperty().addListener((observable, oldValue, newValue) -> {
@@ -69,6 +73,12 @@ public class EditorFormController {
                 }
             }
         });
+    }
+
+    private void setWordCount() {
+        String text = txtEditor.getText().isEmpty() ? "0 Words, " : txtEditor.getText().split("[\\n\\s]+").length + " Words, ";
+        text += txtEditor.getText().replaceAll("[\\n]+","").length() + " Characters";
+        lblWordCount.setText(text);
     }
 
     private void findAll(String newValue) {
