@@ -4,6 +4,7 @@ import javafx.animation.TranslateTransition;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -27,11 +28,28 @@ public class EditorFormController {
     public TextField txtSearch;
     public TextArea txtEditor;
     public VBox pneVBox;
+    public Label lblCaretLocation;
     private int findOffset = -1;
 
     public void initialize() {
         pneFind.setVisible(false);
         pneReplace.setVisible(false);
+
+        txtEditor.caretPositionProperty().addListener((observable, oldValue, newValue) -> {
+//            System.out.println(newValue);
+//            System.out.println("a       s d".split("[\\s]+").length);
+            String[] rows = (txtEditor.getText()+" ").split("\\n");
+            int columnNumber = txtEditor.getCaretPosition();
+            System.out.println(columnNumber);
+            for (int i = 0; i < rows.length; i++) {
+                if (columnNumber <= rows[i].length()) {
+                    lblCaretLocation.setText("Line " + (i + 1) + " Col " + (columnNumber + 1));
+                    break;
+                }
+                columnNumber -= rows[i].length() + 1;
+            }
+            System.out.println(rows.length);
+        });
 
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
             findAll(newValue);
@@ -44,14 +62,11 @@ public class EditorFormController {
         txtEditor.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 findAll("");
-                Node children = pneVBox.getChildren().get(0);
+                AnchorPane children = (AnchorPane) pneVBox.getChildren().get(0);
 
-                double paneHeight = ((AnchorPane) children).getHeight();
-                TranslateTransition paneAppearAnimation = new TranslateTransition(new Duration((paneHeight + 100) / 2 * 3), children);
-                paneAppearAnimation.setFromY(-29);
-                paneAppearAnimation.setToY(-paneHeight - 29);
-                paneAppearAnimation.play();
-                paneAppearAnimation.setOnFinished(event -> children.setVisible(false));
+                if (children.isVisible()) {
+                    showSearchBar(children);
+                }
             }
         });
     }
@@ -75,8 +90,6 @@ public class EditorFormController {
                     break;
                 }
             }
-
-            txtEditor.deselect();
         } catch (PatternSyntaxException e) {
         }
     }
@@ -102,16 +115,26 @@ public class EditorFormController {
         ObservableList<Node> children = pneVBox.getChildren();
 
         if (children.get(0) == anchorPane) {
-            children.get(0).setVisible(true);
-            TextField textField = (TextField) ((AnchorPane) children.get(0)).getChildren().get(0);
-            textField.requestFocus();
-            findAll(textField.getText());
+            boolean focusChanged = false;
+            if (!children.get(0).isVisible()) {
+                focusChanged = true;
+                children.get(0).setVisible(true);
+                TextField textField = (TextField) ((AnchorPane) children.get(0)).getChildren().get(0);
+                textField.requestFocus();
+                findAll(textField.getText());
+            }
 
             double paneHeight = ((AnchorPane) children.get(0)).getHeight();
             TranslateTransition paneAppearAnimation = new TranslateTransition(new Duration((paneHeight + 100) / 2 * 3), children.get(0));
-            paneAppearAnimation.setFromY(-paneHeight - 29);
-            paneAppearAnimation.setToY(-29);
+            paneAppearAnimation.setFromY(focusChanged ? -paneHeight - 29 : -29);
+            paneAppearAnimation.setToY(focusChanged ? -29 : -paneHeight - 29);
             paneAppearAnimation.play();
+
+            if (!focusChanged) {
+                paneAppearAnimation.setOnFinished(event -> {
+                    children.get(0).setVisible(false);
+                });
+            }
             return;
         }
 

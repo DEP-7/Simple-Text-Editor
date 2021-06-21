@@ -18,6 +18,8 @@ public class AppInitializer extends Application {
         Scene mainScene = new Scene(root);
         primaryStage.setScene(mainScene);
         primaryStage.setTitle("Simple Text Editor");
+        primaryStage.setMinHeight(180);
+        primaryStage.setMinWidth(500);
         //primaryStage.setMaximized(true);
         primaryStage.show();
     }
