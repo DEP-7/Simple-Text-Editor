@@ -19,7 +19,7 @@
    <children>
       <MenuBar layoutX="-39.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu text="_File">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#mnuItemNew_OnAction" text="New" />
                   <MenuItem mnemonicParsing="false" text="Open" />
@@ -29,7 +29,7 @@
                   <MenuItem mnemonicParsing="false" onAction="#mnuItemExit_OnAction" text="Exit" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
+          <Menu text="_Edit">
             <items>
               <MenuItem mnemonicParsing="false" text="Cut">
                      <accelerator>
@@ -63,10 +63,10 @@
                      </accelerator>
                   </MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#mnuPreferences_OnAction" text="Preferences" />
+                  <MenuItem onAction="#mnuPreferences_OnAction" text="_Preferences" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Help">
+          <Menu text="_Help">
             <items>
               <MenuItem mnemonicParsing="false" text="About" />
             </items>
