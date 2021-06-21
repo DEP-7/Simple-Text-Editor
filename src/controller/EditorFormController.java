@@ -205,6 +205,10 @@ public class EditorFormController {
         txtEditor.setText(output);
         findAll("");
     }
+
+    public void mnuPreferences_OnAction(ActionEvent actionEvent) {
+
+    }
 }
 
 class Index {

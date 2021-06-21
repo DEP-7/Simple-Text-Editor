@@ -45,6 +45,11 @@
                         <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#mnuItemSelectAll_OnAction" text="Select All">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#mnuItemFind_OnAction" text="Find">
                      <accelerator>
@@ -57,11 +62,7 @@
                      </accelerator>
                   </MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#mnuItemSelectAll_OnAction" text="Select All">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator>
-                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#mnuPreferences_OnAction" text="Preferences" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -71,7 +72,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <TextArea fx:id="txtEditor" layoutX="60.0" layoutY="70.0" prefHeight="200.0" prefWidth="200.0" text="id you know the &#10;id you know the word ‘essay’ is derived from a Latin word ‘exagium’, which roughly translates to presenting one’s case? So essays are a short piece of writing representing one’s side of the argument or one’s experiences, stories, etc. Essays are very personalized. So let us learn about types of essays, format, and tips for essay-writing.&#10;id you know the word ‘essay’ is derived from a Latin word ‘exagium’, which roughly translates to presenting one’s case? So essays are a short piece of writing representing one’s side of the argument or one’s experiences, stories, etc. Essays are very personalized. So let us learn about types of essays, format, and tips for essay-writing.&#10;id you know the word ‘essay’ is derived from a Latin word ‘exagium’, which roughly translates to presenting one’s case? So essays are a short piece of writing representing one’s side of the argument or one’s experiences, stories, etc. Essays are very personalized. So let us learn about types of essays, format, and tips for essay-writing.&#10;id you know the word ‘essay’ is derived from a Latin word ‘exagium’, which roughly translates to presenting one’s case? So essays are a short piece of writing representing one’s side of the argument or one’s experiences, stories, etc. Essays are very personalized. So let us learn about types of essays, format, and tips for essay-writing.&#10;&#10;word ‘essay’ is derived from a Latin word ‘exagium’, which roughly translates to presenting one’s case? So essays are a short piece of writing representing one’s side of the argument or one’s experiences, stories, etc. Essays are very personalized. So let us learn about types of essays, format, and tips for essay-writing." AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="39.0" />
+      <TextArea fx:id="txtEditor" layoutX="60.0" layoutY="70.0" prefHeight="200.0" prefWidth="200.0" text="package controller;&#10;&#10;import javafx.animation.TranslateTransition;&#10;import javafx.collections.ObservableList;&#10;import javafx.event.ActionEvent;&#10;import javafx.scene.Node;&#10;import javafx.scene.control.Label;&#10;import javafx.scene.control.TextArea;&#10;import javafx.scene.control.TextField;&#10;import javafx.scene.layout.AnchorPane;&#10;import javafx.scene.layout.VBox;&#10;import javafx.scene.paint.Color;&#10;import javafx.util.Duration;&#10;import util.FXUtil;&#10;&#10;import java.util.ArrayList;&#10;import java.util.List;&#10;import java.util.regex.Matcher;&#10;import java.util.regex.Pattern;&#10;import java.util.regex.PatternSyntaxException;&#10;&#10;public class EditorFormController {&#10;    private final List&lt;Index&gt; searchList = new ArrayList&lt;&gt;();&#10;    public AnchorPane pneReplace;&#10;    public AnchorPane pneFind;&#10;    public TextField txtSearchForReplace;&#10;    public TextField txtReplace;&#10;    public TextField txtSearch;&#10;    public TextArea txtEditor;&#10;    public Label lblCaretLocation;&#10;    public Label lblWordCount;&#10;    public VBox pneVBox;&#10;    private int findOffset = -1;&#10;&#10;    public void initialize() {&#10;        pneFind.setVisible(false);&#10;        pneReplace.setVisible(false);&#10;&#10;        setWordCount();&#10;" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0" />
       <ToolBar layoutX="14.0" layoutY="360.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <items>
             <Label fx:id="lblCaretLocation" text="Line 1 Col 1" />
