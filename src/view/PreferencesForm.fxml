@@ -10,7 +10,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="397.0" tabClosingPolicy="UNAVAILABLE" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="controller.PreferencesFormController">
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="397.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PreferencesFormController">
   <tabs>
     <Tab text="   Font   ">
       <content>
@@ -43,9 +44,9 @@
                   </HBox>
                   <AnchorPane layoutX="37.0" layoutY="232.0" prefHeight="80.0" prefWidth="212.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="230.0">
                      <children>
-                        <AnchorPane layoutX="14.0" layoutY="-11.0" prefHeight="80.0" prefWidth="196.0" style="-fx-border-color: black; -fx-border-radius: 3;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane layoutX="14.0" layoutY="-11.0" prefHeight="80.0" prefWidth="240.0" style="-fx-border-color: black; -fx-border-radius: 3;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Label fx:id="lblSample" layoutX="8.0" layoutY="13.0" text="AaBbXxYy" AnchorPane.leftAnchor="2.0">
+                              <Label fx:id="lblSample" layoutX="8.0" layoutY="13.0" text="AaBbXxYy" AnchorPane.leftAnchor="2.0" AnchorPane.topAnchor="13.0">
                                  <font>
                                     <Font size="48.0" />
                                  </font>

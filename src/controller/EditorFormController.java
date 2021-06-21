@@ -3,16 +3,22 @@ package controller;
 import javafx.animation.TranslateTransition;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import util.FXUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -33,6 +39,7 @@ public class EditorFormController {
     private int findOffset = -1;
 
     public void initialize() {
+        System.out.println(txtEditor.getFont());
         pneFind.setVisible(false);
         pneReplace.setVisible(false);
 
@@ -206,8 +213,19 @@ public class EditorFormController {
         findAll("");
     }
 
-    public void mnuPreferences_OnAction(ActionEvent actionEvent) {
-
+    public void mnuPreferences_OnAction(ActionEvent actionEvent) throws IOException {
+        Stage childStage = new Stage();
+        Parent root = FXMLLoader.load(this.getClass().getResource("../view/PreferencesForm.fxml"));
+        Scene childScene = new Scene(root);
+        EditorFormController ctrl = (EditorFormController) txtEditor.getScene().getUserData();
+        childScene.setUserData(ctrl);
+        childStage.setScene(childScene);
+        childStage.setTitle("Preferences");
+        childStage.initModality(Modality.WINDOW_MODAL);
+        childStage.initOwner(txtEditor.getScene().getWindow());
+        childStage.setResizable(false);
+        childStage.centerOnScreen();
+        childStage.showAndWait();
     }
 }
 

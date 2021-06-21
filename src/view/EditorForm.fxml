@@ -13,6 +13,7 @@
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditorFormController">
    <children>
@@ -72,7 +73,10 @@
           </Menu>
         </menus>
       </MenuBar>
-      <TextArea fx:id="txtEditor" layoutX="60.0" layoutY="70.0" prefHeight="200.0" prefWidth="200.0" text="package controller;&#10;&#10;import javafx.animation.TranslateTransition;&#10;import javafx.collections.ObservableList;&#10;import javafx.event.ActionEvent;&#10;import javafx.scene.Node;&#10;import javafx.scene.control.Label;&#10;import javafx.scene.control.TextArea;&#10;import javafx.scene.control.TextField;&#10;import javafx.scene.layout.AnchorPane;&#10;import javafx.scene.layout.VBox;&#10;import javafx.scene.paint.Color;&#10;import javafx.util.Duration;&#10;import util.FXUtil;&#10;&#10;import java.util.ArrayList;&#10;import java.util.List;&#10;import java.util.regex.Matcher;&#10;import java.util.regex.Pattern;&#10;import java.util.regex.PatternSyntaxException;&#10;&#10;public class EditorFormController {&#10;    private final List&lt;Index&gt; searchList = new ArrayList&lt;&gt;();&#10;    public AnchorPane pneReplace;&#10;    public AnchorPane pneFind;&#10;    public TextField txtSearchForReplace;&#10;    public TextField txtReplace;&#10;    public TextField txtSearch;&#10;    public TextArea txtEditor;&#10;    public Label lblCaretLocation;&#10;    public Label lblWordCount;&#10;    public VBox pneVBox;&#10;    private int findOffset = -1;&#10;&#10;    public void initialize() {&#10;        pneFind.setVisible(false);&#10;        pneReplace.setVisible(false);&#10;&#10;        setWordCount();&#10;" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0" />
+      <TextArea fx:id="txtEditor" layoutX="60.0" layoutY="70.0" prefHeight="200.0" prefWidth="200.0" text="package controller;&#10;&#10;import javafx.animation.TranslateTransition;&#10;import javafx.collections.ObservableList;&#10;import javafx.event.ActionEvent;&#10;import javafx.scene.Node;&#10;import javafx.scene.control.Label;&#10;import javafx.scene.control.TextArea;&#10;import javafx.scene.control.TextField;&#10;import javafx.scene.layout.AnchorPane;&#10;import javafx.scene.layout.VBox;&#10;import javafx.scene.paint.Color;&#10;import javafx.util.Duration;&#10;import util.FXUtil;&#10;&#10;import java.util.ArrayList;&#10;import java.util.List;&#10;import java.util.regex.Matcher;&#10;import java.util.regex.Pattern;&#10;import java.util.regex.PatternSyntaxException;&#10;&#10;public class EditorFormController {&#10;    private final List&lt;Index&gt; searchList = new ArrayList&lt;&gt;();&#10;    public AnchorPane pneReplace;&#10;    public AnchorPane pneFind;&#10;    public TextField txtSearchForReplace;&#10;    public TextField txtReplace;&#10;    public TextField txtSearch;&#10;    public TextArea txtEditor;&#10;    public Label lblCaretLocation;&#10;    public Label lblWordCount;&#10;    public VBox pneVBox;&#10;    private int findOffset = -1;&#10;&#10;    public void initialize() {&#10;        pneFind.setVisible(false);&#10;        pneReplace.setVisible(false);&#10;&#10;        setWordCount();&#10;" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0">
+         <font>
+            <Font size="14.0" />
+         </font></TextArea>
       <ToolBar layoutX="14.0" layoutY="360.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <items>
             <Label fx:id="lblCaretLocation" text="Line 1 Col 1" />

@@ -1,3 +1,4 @@
+import controller.EditorFormController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,9 +15,11 @@ public class AppInitializer extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(this.getClass().getResource("view/EditorForm.fxml"));
-        Scene mainScene = new Scene(root);
+        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("view/EditorForm.fxml"));
+        Scene mainScene = new Scene(fxmlLoader.load());
         primaryStage.setScene(mainScene);
+        EditorFormController controller = fxmlLoader.getController();
+        mainScene.setUserData(controller);
         primaryStage.setTitle("Simple Text Editor");
         primaryStage.setMinHeight(180);
         primaryStage.setMinWidth(500);
