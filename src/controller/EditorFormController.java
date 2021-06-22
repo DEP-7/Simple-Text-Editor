@@ -1,26 +1,27 @@
 package controller;
 
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Duration;
 import util.FXUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -39,7 +40,6 @@ public class EditorFormController {
     private int findOffset = -1;
 
     public void initialize() {
-        System.out.println(txtEditor.getFont());
         pneFind.setVisible(false);
         pneReplace.setVisible(false);
 
@@ -80,6 +80,14 @@ public class EditorFormController {
                 }
             }
         });
+
+        Platform.runLater(() -> {
+            Window window = txtEditor.getScene().getWindow();
+            window.setOnCloseRequest(event -> {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to exit?", ButtonType.YES,ButtonType.NO);
+                System.out.println(alert);
+            });
+        });
     }
 
     private void setWordCount() {
@@ -113,11 +121,15 @@ public class EditorFormController {
 
 
     public void mnuItemNew_OnAction(ActionEvent actionEvent) {
-        txtEditor.clear();
+        Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to get new page?", ButtonType.YES, ButtonType.NO).showAndWait();
+        if (option.get() == ButtonType.YES) {
+            txtEditor.clear();
+        }
         txtEditor.requestFocus();
     }
 
     public void mnuItemExit_OnAction(ActionEvent actionEvent) {
+        ((Stage)txtEditor.getScene().getWindow()).close();
     }
 
     public void mnuItemFind_OnAction(ActionEvent actionEvent) {
@@ -214,19 +226,44 @@ public class EditorFormController {
     }
 
     public void mnuPreferences_OnAction(ActionEvent actionEvent) throws IOException {
-        Stage childStage = new Stage();
-        Parent root = FXMLLoader.load(this.getClass().getResource("../view/PreferencesForm.fxml"));
-        Scene childScene = new Scene(root);
-        EditorFormController ctrl = (EditorFormController) txtEditor.getScene().getUserData();
-        childScene.setUserData(ctrl);
-        childStage.setScene(childScene);
-        childStage.setTitle("Preferences");
-        childStage.initModality(Modality.WINDOW_MODAL);
-        childStage.initOwner(txtEditor.getScene().getWindow());
-        childStage.setResizable(false);
-        childStage.centerOnScreen();
-        childStage.showAndWait();
+        loadForm("Preferences");
     }
+
+    public void mnuItemCut_OnAction(ActionEvent actionEvent) {
+        txtEditor.cut();
+    }
+
+    public void mnuItemCopy_OnAction(ActionEvent actionEvent) {
+        txtEditor.copy();
+    }
+
+    public void mnuItemPaste_OnAction(ActionEvent actionEvent) {
+        txtEditor.paste();
+    }
+
+    public void mnuItemAbout_OnAction(ActionEvent actionEvent) {
+        loadForm("About");
+    }
+
+    private void loadForm(String formName) {
+        try {
+            Stage childStage = new Stage();
+            Parent root = FXMLLoader.load(this.getClass().getResource("../view/"+formName+"Form.fxml"));
+            Scene childScene = new Scene(root);
+            EditorFormController ctrl = (EditorFormController) txtEditor.getScene().getUserData();
+            childScene.setUserData(ctrl);
+            childStage.setScene(childScene);
+            childStage.setTitle(formName);
+            childStage.initModality(Modality.WINDOW_MODAL);
+            childStage.initOwner(txtEditor.getScene().getWindow());
+            childStage.setResizable(false);
+            childStage.centerOnScreen();
+            childStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
 
 class Index {

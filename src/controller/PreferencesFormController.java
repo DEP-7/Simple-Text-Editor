@@ -20,7 +20,7 @@ import java.util.List;
 public class PreferencesFormController {
     public ListView<Integer> lstFontSize;
     public ListView<Text> lstFontStyle;
-    public ListView<Font> lstFont;
+    public ListView<String> lstFont;
     public TextField txtFontStyle;
     public TextField txtFontSize;
     public TextField txtSample;
@@ -32,11 +32,15 @@ public class PreferencesFormController {
             editorFormController = (EditorFormController) txtFont.getScene().getUserData();
             loadFontSizes();
             loadFontStyles();
+
+            lstFont.getItems().add("System"); // Need to implement
+            lstFont.getSelectionModel().select(0);
+            txtFont.setText("System");
         });
 
         lstFontSize.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             txtFontSize.setText(newValue + "");
-            setFont(txtSample, Double.parseDouble(txtFontSize.getText()), (txtFontStyle.getText()));
+            setFont(txtSample, Double.parseDouble(txtFontSize.getText()), txtFontStyle.getText());
         });
 
         lstFontStyle.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -107,10 +111,10 @@ public class PreferencesFormController {
                 textField.setFont(Font.font("System", FontWeight.NORMAL, FontPosture.ITALIC, fontSize));
                 break;
             case "Bold Italic":
-                textField.setFont(Font.font(fontSize));
+                textField.setFont(Font.font("System", FontWeight.BOLD, FontPosture.ITALIC, fontSize));
                 break;
             default:
-                textField.setFont(Font.font("System", FontWeight.BOLD, FontPosture.ITALIC, fontSize));
+                textField.setFont(Font.font(fontSize));
                 break;
         }
     }
