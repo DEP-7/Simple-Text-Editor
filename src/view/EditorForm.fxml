@@ -43,6 +43,9 @@
           </Menu>
           <Menu text="_Edit">
             <items>
+                  <MenuItem mnemonicParsing="false" onAction="#mnuItemUndo_OnAction" text="Undo" />
+                  <MenuItem mnemonicParsing="false" onAction="#mnuItemRedo_OnAction" text="Redo" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
               <MenuItem mnemonicParsing="false" onAction="#mnuItemCut_OnAction" text="Cut">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -80,7 +83,7 @@
           </Menu>
           <Menu text="_Help">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#mnuItemAbout_OnAction" text="About" />
+              <MenuItem onAction="#mnuItemAbout_OnAction" text="_About" />
             </items>
           </Menu>
         </menus>
@@ -98,7 +101,7 @@
                </padding>
             </Label>
          </items></ToolBar>
-      <AnchorPane fx:id="pneReplace" focusTraversable="true" style="-fx-background-color: grey;">
+      <AnchorPane fx:id="pneReplace" focusTraversable="true" layoutX="266.0" layoutY="249.0" style="-fx-background-color: grey;">
          <children>
             <TextField fx:id="txtSearchForReplace" layoutX="32.0" layoutY="17.0" prefHeight="26.0" prefWidth="310.0" promptText="Search" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
             <TextField fx:id="txtReplace" layoutX="20.0" layoutY="57.0" prefHeight="26.0" prefWidth="310.0" promptText="Replace" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="40.0" />

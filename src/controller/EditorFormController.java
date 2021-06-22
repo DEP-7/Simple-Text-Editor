@@ -14,7 +14,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.Duration;
 import util.FXUtil;
 
@@ -42,6 +41,7 @@ public class EditorFormController {
     public void initialize() {
         pneFind.setVisible(false);
         pneReplace.setVisible(false);
+        pneVBox.setVisible(false);
 
         setWordCount();
 
@@ -82,17 +82,22 @@ public class EditorFormController {
         });
 
         Platform.runLater(() -> {
-            Window window = txtEditor.getScene().getWindow();
-            window.setOnCloseRequest(event -> {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to exit?", ButtonType.YES,ButtonType.NO);
-                System.out.println(alert);
+            Stage stage = (Stage) txtEditor.getScene().getWindow();
+
+            stage.setOnCloseRequest(event -> {
+                Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to exit?", ButtonType.YES, ButtonType.NO).showAndWait();
+
+                if (option.get() == ButtonType.NO) {
+                    event.consume();
+                }
+
             });
         });
     }
 
     private void setWordCount() {
         String text = txtEditor.getText().isEmpty() ? "0 Words, " : txtEditor.getText().split("[\\n\\s]+").length + " Words, ";
-        text += txtEditor.getText().replaceAll("[\\n]+","").length() + " Characters";
+        text += txtEditor.getText().replaceAll("[\\n]+", "").length() + " Characters";
         lblWordCount.setText(text);
     }
 
@@ -129,7 +134,10 @@ public class EditorFormController {
     }
 
     public void mnuItemExit_OnAction(ActionEvent actionEvent) {
-        ((Stage)txtEditor.getScene().getWindow()).close();
+        Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to exit?", ButtonType.YES, ButtonType.NO).showAndWait();
+        if (option.get() == ButtonType.YES) {
+            ((Stage) txtEditor.getScene().getWindow()).close();
+        }
     }
 
     public void mnuItemFind_OnAction(ActionEvent actionEvent) {
@@ -148,6 +156,7 @@ public class EditorFormController {
             if (!children.get(0).isVisible()) {
                 focusChanged = true;
                 children.get(0).setVisible(true);
+                pneVBox.setVisible(true);
                 TextField textField = (TextField) ((AnchorPane) children.get(0)).getChildren().get(0);
                 textField.requestFocus();
                 findAll(textField.getText());
@@ -162,6 +171,7 @@ public class EditorFormController {
             if (!focusChanged) {
                 paneAppearAnimation.setOnFinished(event -> {
                     children.get(0).setVisible(false);
+                    pneVBox.setVisible(false);
                 });
             }
             return;
@@ -220,25 +230,28 @@ public class EditorFormController {
             txtSearchForReplace.requestFocus();
             return;
         }
-        String output = txtEditor.getText().replaceAll(txtSearchForReplace.getText(), txtReplace.getText());
-        txtEditor.setText(output);
+        String selectedText = txtEditor.getSelectedText();
+        int caretPosition = txtEditor.getCaretPosition();
+        String firstPart = txtEditor.getText().substring(0, caretPosition).replaceAll(txtSearchForReplace.getText(), txtReplace.getText());
+        String secondPart = txtEditor.getText().substring(caretPosition).replaceAll(txtSearchForReplace.getText(), txtReplace.getText());
+        selectedText = selectedText.replaceAll(txtSearchForReplace.getText(), txtReplace.getText());
+        txtEditor.setText(firstPart + secondPart);
         findAll("");
+
+        if (!selectedText.isEmpty()) {
+
+            if (firstPart.endsWith(selectedText)) {
+                txtEditor.selectRange(firstPart.length() - selectedText.length(), firstPart.length());
+            } else if (secondPart.startsWith(selectedText)) {
+                txtEditor.selectRange(firstPart.length(), firstPart.length() + selectedText.length());
+            }
+
+        }
+
     }
 
     public void mnuPreferences_OnAction(ActionEvent actionEvent) throws IOException {
         loadForm("Preferences");
-    }
-
-    public void mnuItemCut_OnAction(ActionEvent actionEvent) {
-        txtEditor.cut();
-    }
-
-    public void mnuItemCopy_OnAction(ActionEvent actionEvent) {
-        txtEditor.copy();
-    }
-
-    public void mnuItemPaste_OnAction(ActionEvent actionEvent) {
-        txtEditor.paste();
     }
 
     public void mnuItemAbout_OnAction(ActionEvent actionEvent) {
@@ -248,7 +261,7 @@ public class EditorFormController {
     private void loadForm(String formName) {
         try {
             Stage childStage = new Stage();
-            Parent root = FXMLLoader.load(this.getClass().getResource("../view/"+formName+"Form.fxml"));
+            Parent root = FXMLLoader.load(this.getClass().getResource("../view/" + formName + "Form.fxml"));
             Scene childScene = new Scene(root);
             EditorFormController ctrl = (EditorFormController) txtEditor.getScene().getUserData();
             childScene.setUserData(ctrl);
@@ -264,6 +277,25 @@ public class EditorFormController {
         }
     }
 
+    public void mnuItemCut_OnAction(ActionEvent actionEvent) {
+        txtEditor.cut();
+    }
+
+    public void mnuItemCopy_OnAction(ActionEvent actionEvent) {
+        txtEditor.copy();
+    }
+
+    public void mnuItemPaste_OnAction(ActionEvent actionEvent) {
+        txtEditor.paste();
+    }
+
+    public void mnuItemUndo_OnAction(ActionEvent actionEvent) {
+        txtEditor.undo();
+    }
+
+    public void mnuItemRedo_OnAction(ActionEvent actionEvent) {
+        txtEditor.redo();
+    }
 }
 
 class Index {

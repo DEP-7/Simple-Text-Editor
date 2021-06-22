@@ -25,7 +25,5 @@ public class AppInitializer extends Application {
         primaryStage.setMinWidth(500);
         //primaryStage.setMaximized(true);
         primaryStage.show();
-
-        primaryStage.setAlwaysOnTop(true);
     }
 }
