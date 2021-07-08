@@ -39,14 +39,10 @@
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                      </accelerator></MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#mnuItemPageSetup_OnAction" text="Page Setup" />
                   <MenuItem mnemonicParsing="false" onAction="#mnuItemPrint_OnAction" text="Print">
                      <accelerator>
-                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
-                     </accelerator>
-                  </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#mnuItemPageSetup_OnAction" text="Page Setup">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                        <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
                   <MenuItem mnemonicParsing="false" onAction="#mnuItemExit_OnAction" text="Exit" />
@@ -89,9 +85,14 @@
                      </accelerator>
                   </MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem onAction="#mnuPreferences_OnAction" text="_Preferences" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Format">
+              <items>
+                  <CheckMenuItem mnemonicParsing="false" onAction="#mnuWordWrap_OnAction" text="Word Wrap" />
+                  <MenuItem onAction="#mnuFont_OnAction" text="Font" />
+              </items>
+            </Menu>
             <Menu mnemonicParsing="false" text="View">
               <items>
                   <CheckMenuItem mnemonicParsing="false" onAction="#mnuItemStatusBar_OnAction" selected="true" text="Status Bar" />

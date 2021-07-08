@@ -280,8 +280,8 @@ public class EditorFormController {
 
     }
 
-    public void mnuPreferences_OnAction(ActionEvent actionEvent) throws IOException {
-        loadForm("Preferences");
+    public void mnuFont_OnAction(ActionEvent actionEvent) throws IOException {
+        loadForm("Font");
     }
 
     public void mnuItemAbout_OnAction(ActionEvent actionEvent) {
@@ -407,8 +407,10 @@ public class EditorFormController {
     }
 
     public void mnuItemPrint_OnAction(ActionEvent actionEvent) {
-        printerJob.showPrintDialog(txtEditor.getScene().getWindow());
-        printerJob.printPage(txtEditor.lookup("Text"));
+        boolean printDialog = printerJob.showPrintDialog(txtEditor.getScene().getWindow());
+        if (printDialog) {
+            printerJob.printPage(txtEditor.lookup("Text"));
+        }
     }
 
     public void mnuItemPageSetup_OnAction(ActionEvent actionEvent) {
@@ -418,6 +420,10 @@ public class EditorFormController {
     public void mnuItemStatusBar_OnAction(ActionEvent actionEvent) {
         tbStatusBar.setVisible(!tbStatusBar.isVisible());
         AnchorPane.setBottomAnchor(txtEditor,tbStatusBar.isVisible()?40.0:0.0);
+    }
+
+    public void mnuWordWrap_OnAction(ActionEvent actionEvent) {
+        txtEditor.setWrapText(!txtEditor.isWrapText());
     }
 }
 

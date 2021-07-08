@@ -17,10 +17,10 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
-public class PreferencesFormController {
+public class FontFormController {
     public ListView<Integer> lstFontSize;
     public ListView<Text> lstFontStyle;
-    public ListView<String> lstFont;
+    public ListView<Text> lstFont;
     public TextField txtFontStyle;
     public TextField txtFontSize;
     public TextField txtSample;
@@ -32,21 +32,36 @@ public class PreferencesFormController {
             editorFormController = (EditorFormController) txtFont.getScene().getUserData();
             loadFontSizes();
             loadFontStyles();
+            loadFonts();
+        });
 
-            lstFont.getItems().add("System"); // Need to implement
-            lstFont.getSelectionModel().select(0);
-            txtFont.setText("System");
+        lstFont.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            txtFont.setText(newValue.getText());
+            setFonts(txtSample, Double.parseDouble(txtFontSize.getText()), txtFontStyle.getText(),txtFont.getText());
         });
 
         lstFontSize.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             txtFontSize.setText(newValue + "");
-            setFont(txtSample, Double.parseDouble(txtFontSize.getText()), txtFontStyle.getText());
+            setFonts(txtSample, Double.parseDouble(txtFontSize.getText()), txtFontStyle.getText(),txtFont.getText());
         });
 
         lstFontStyle.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             txtFontStyle.setText(newValue.getText());
-            setFont(txtSample, Double.parseDouble(txtFontSize.getText()), newValue.getText());
+            setFonts(txtSample, Double.parseDouble(txtFontSize.getText()), newValue.getText(),txtFont.getText());
         });
+    }
+
+    private void loadFonts() {
+        ObservableList<Text> fontStyleText = FXCollections.observableArrayList();
+
+        for (String fontName : Font.getFontNames()) {
+            Text fontText = new Text(fontName);
+            fontText.setFont(Font.font(fontName, 13));
+            fontStyleText.add(fontText);
+        }
+
+        lstFont.getItems().setAll(fontStyleText);
+        lstFont.getSelectionModel().select(Font.getFontNames().indexOf(editorFormController.txtEditor.getFont().getName()));
     }
 
     private void loadFontStyles() {
@@ -85,11 +100,15 @@ public class PreferencesFormController {
     }
 
     public void btnOk_OnAction(ActionEvent actionEvent) {
-        setFont(editorFormController.txtEditor, Double.parseDouble(txtFontSize.getText()), txtFontStyle.getText());
+        setFonts(editorFormController.txtEditor, Double.parseDouble(txtFontSize.getText()), txtFontStyle.getText(),txtFont.getText());
         ((Stage) txtFontSize.getScene().getWindow()).close();
     }
 
     public void btnOk_OnKeyPressed(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ENTER || keyEvent.getCode() == KeyCode.SPACE) {
+            setFonts(editorFormController.txtEditor, Double.parseDouble(txtFontSize.getText()), txtFontStyle.getText(),txtFont.getText());
+            ((Stage) txtFontSize.getScene().getWindow()).close();
+        }
     }
 
     public void btnCancel_OnAction(ActionEvent actionEvent) {
@@ -102,19 +121,19 @@ public class PreferencesFormController {
         }
     }
 
-    private void setFont(TextInputControl textField, double fontSize, String fontStyle) {
+    private void setFonts(TextInputControl textField, double fontSize, String fontStyle, String font) {
         switch (fontStyle) {
             case "Bold":
-                textField.setFont(Font.font("System", FontWeight.BOLD, fontSize));
+                textField.setFont(Font.font(font, FontWeight.BOLD, fontSize));
                 break;
             case "Italic":
-                textField.setFont(Font.font("System", FontWeight.NORMAL, FontPosture.ITALIC, fontSize));
+                textField.setFont(Font.font(font, FontWeight.NORMAL, FontPosture.ITALIC, fontSize));
                 break;
             case "Bold Italic":
-                textField.setFont(Font.font("System", FontWeight.BOLD, FontPosture.ITALIC, fontSize));
+                textField.setFont(Font.font(font, FontWeight.BOLD, FontPosture.ITALIC, fontSize));
                 break;
             default:
-                textField.setFont(Font.font(fontSize));
+                textField.setFont(Font.font(font,fontSize));
                 break;
         }
     }
