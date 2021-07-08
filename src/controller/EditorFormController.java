@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -37,6 +38,7 @@ public class EditorFormController {
     public TextField txtReplace;
     public TextField txtSearch;
     public TextArea txtEditor;
+    public ToolBar tbStatusBar;
     public Label lblCaretLocation;
     public Label lblWordCount;
     public VBox pneVBox;
@@ -116,6 +118,7 @@ public class EditorFormController {
 
             loadAllPreferences();
         });
+
     }
 
     private void loadAllPreferences() {
@@ -410,6 +413,11 @@ public class EditorFormController {
 
     public void mnuItemPageSetup_OnAction(ActionEvent actionEvent) {
         printerJob.showPageSetupDialog(txtEditor.getScene().getWindow());
+    }
+
+    public void mnuItemStatusBar_OnAction(ActionEvent actionEvent) {
+        tbStatusBar.setVisible(!tbStatusBar.isVisible());
+        AnchorPane.setBottomAnchor(txtEditor,tbStatusBar.isVisible()?40.0:0.0);
     }
 }
 
