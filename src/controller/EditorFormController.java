@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,12 +13,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import util.FXUtil;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,11 +39,14 @@ public class EditorFormController {
     public Label lblWordCount;
     public VBox pneVBox;
     private int findOffset = -1;
+    private PrinterJob printerJob;
 
     public void initialize() {
         pneFind.setVisible(false);
         pneReplace.setVisible(false);
         pneVBox.setVisible(false);
+
+        printerJob = PrinterJob.createPrinterJob();
 
         setWordCount();
 
@@ -295,6 +300,58 @@ public class EditorFormController {
 
     public void mnuItemRedo_OnAction(ActionEvent actionEvent) {
         txtEditor.redo();
+    }
+
+    public void mnuItemOpen_OnAction(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All Text Files", "*.txt", "*.html"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All Files", "*"));
+        File file = fileChooser.showOpenDialog(txtEditor.getScene().getWindow());
+
+        if (file == null) return;
+
+        txtEditor.clear();
+        try (FileReader fileReader = new FileReader(file);
+             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+
+            String line=null;
+            while ((line = bufferedReader.readLine()) != null) {
+                txtEditor.appendText(line+'\n');
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void mnuItemSave_OnAction(ActionEvent actionEvent) {
+    }
+
+    public void mnuItemSaveAs_OnAction(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save File");
+        File file = fileChooser.showSaveDialog(txtEditor.getScene().getWindow());
+
+        if (file==null)return;
+
+        try (FileWriter fw = new FileWriter(file);
+             BufferedWriter bw = new BufferedWriter(fw)) {
+
+            bw.write(txtEditor.getText());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mnuItemPrint_OnAction(ActionEvent actionEvent) {
+        printerJob.showPrintDialog(txtEditor.getScene().getWindow());
+        printerJob.printPage(txtEditor.lookup("Text"));
+    }
+
+    public void mnuItemPageSetup_OnAction(ActionEvent actionEvent) {
+        printerJob.showPageSetupDialog(txtEditor.getScene().getWindow());
     }
 }
 
