@@ -6,11 +6,86 @@
 
 <AnchorPane fx:id="pneAbout" prefHeight="329.0" prefWidth="284.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AboutFormController">
    <children>
-      <Label alignment="CENTER" layoutY="47.0" text="Simple Text Editor" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+      <Label alignment="TOP_LEFT" layoutX="11.0" layoutY="69.0" prefHeight="245.0" prefWidth="254.0" text="Simple Text Editor version 1.1&#10;&#10;Copyright © 2021 Dhanushka Chandimal All rights reserved.&#10;&#10;&#10;&#10;This product is licensed under MIT license.&#10;Visit https://github.com/DEP-7/Simple-Text-Editor.git for more information." wrapText="true" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="70.0" />
+      <Label fx:id="lblLetter1" alignment="CENTER" layoutX="38.0" layoutY="24.0" text="S">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Label>
-      <Label alignment="TOP_LEFT" layoutX="11.0" layoutY="115.0" prefHeight="165.0" prefWidth="275.0" text="Simple Text Editor version 1.1&#10;&#10;Copyright © 2021 Dhanushka Chandimal All rights reserved.&#10;&#10;&#10;&#10;This product is licensed under MIT license.&#10;Visit https://github.com/DEP-7/Simple-Text-Editor.git for more information." wrapText="true" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="60.0" />
+      <Label fx:id="lblLetter2" alignment="CENTER" layoutX="52.0" layoutY="24.0" text="i">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLetter3" alignment="CENTER" layoutX="59.0" layoutY="24.0" text="m">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLetter4" alignment="CENTER" layoutX="80.0" layoutY="24.0" text="p">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLetter5" alignment="CENTER" layoutX="94.0" layoutY="24.0" text="l">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLetter6" alignment="CENTER" layoutX="101.0" layoutY="24.0" text="e">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLetter7" alignment="CENTER" layoutX="122.0" layoutY="24.0" text="T">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLetter8" alignment="CENTER" layoutX="135.0" layoutY="24.0" text="e">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLetter9" alignment="CENTER" layoutX="149.0" layoutY="24.0" text="x">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLetter10" alignment="CENTER" layoutX="162.0" layoutY="24.0" text="t">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLetter11" alignment="CENTER" layoutX="178.0" layoutY="24.0" text="E">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLetter12" alignment="CENTER" layoutX="192.0" layoutY="24.0" text="d">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLetter14" alignment="CENTER" layoutX="213.0" layoutY="24.0" text="t">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLetter15" alignment="CENTER" layoutX="223.0" layoutY="24.0" text="o">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLetter16" alignment="CENTER" layoutX="236.0" layoutY="24.0" text="r">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblLetter13" alignment="CENTER" layoutX="206.0" layoutY="24.0" text="i">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
