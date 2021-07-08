@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Duration;
 import util.FXUtil;
 
@@ -23,6 +24,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -40,6 +42,7 @@ public class EditorFormController {
     public VBox pneVBox;
     private int findOffset = -1;
     private PrinterJob printerJob;
+    Properties prop;
 
     public void initialize() {
         pneFind.setVisible(false);
@@ -47,6 +50,7 @@ public class EditorFormController {
         pneVBox.setVisible(false);
 
         printerJob = PrinterJob.createPrinterJob();
+        prop = new Properties();
 
         setWordCount();
 
@@ -87,18 +91,51 @@ public class EditorFormController {
         });
 
         Platform.runLater(() -> {
-            Stage stage = (Stage) txtEditor.getScene().getWindow();
+            Window window = txtEditor.getScene().getWindow();
 
-            stage.setOnCloseRequest(event -> {
-                Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to exit?", ButtonType.YES, ButtonType.NO).showAndWait();
+            window.setOnCloseRequest(event -> {
+                prop.setProperty("xpos", window.getX()+"");
+                prop.setProperty("ypos", window.getY()+"");
+                prop.setProperty("width", window.getWidth()+"");
+                prop.setProperty("height", window.getHeight()+"");
+                /*Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to exit?", ButtonType.YES, ButtonType.NO).showAndWait();
 
                 if (option.get() == ButtonType.NO) {
                     event.consume();
-                }
+                }*/
+                File appSettings = new File("Simple Text Editor.properties");
 
+                try (FileWriter fw = new FileWriter(appSettings);
+                     final BufferedWriter bw = new BufferedWriter(fw)) {
+
+                    prop.store(bw,"");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
+
+            loadAllPreferences();
         });
     }
+
+    private void loadAllPreferences() {
+        File appSettings = new File("Simple Text Editor.properties");
+
+        try (FileReader fr = new FileReader(appSettings);
+             BufferedReader br = new BufferedReader(fr)) {
+            prop.load(br);
+
+            Window window = txtEditor.getScene().getWindow();
+            window.setX(Double.parseDouble(prop.getProperty("xpos")));
+            window.setY(Double.parseDouble(prop.getProperty("ypos")));
+            window.setHeight(Double.parseDouble(prop.getProperty("height")));
+            window.setWidth(Double.parseDouble(prop.getProperty("width")));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void setWordCount() {
         String text = txtEditor.getText().isEmpty() ? "0 Words, " : txtEditor.getText().split("[\\n\\s]+").length + " Words, ";
@@ -129,21 +166,6 @@ public class EditorFormController {
         }
     }
 
-
-    public void mnuItemNew_OnAction(ActionEvent actionEvent) {
-        Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to get new page?", ButtonType.YES, ButtonType.NO).showAndWait();
-        if (option.get() == ButtonType.YES) {
-            txtEditor.clear();
-        }
-        txtEditor.requestFocus();
-    }
-
-    public void mnuItemExit_OnAction(ActionEvent actionEvent) {
-        Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to exit?", ButtonType.YES, ButtonType.NO).showAndWait();
-        if (option.get() == ButtonType.YES) {
-            ((Stage) txtEditor.getScene().getWindow()).close();
-        }
-    }
 
     public void mnuItemFind_OnAction(ActionEvent actionEvent) {
         showSearchBar(pneFind);
@@ -302,6 +324,22 @@ public class EditorFormController {
         txtEditor.redo();
     }
 
+    public void mnuItemNew_OnAction(ActionEvent actionEvent) {
+        Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to get new page?", ButtonType.YES, ButtonType.NO).showAndWait();
+        if (option.get() == ButtonType.YES) {
+            txtEditor.clear();
+        }
+        prop.setProperty("saved.dir", "null");
+        txtEditor.requestFocus();
+    }
+
+    public void mnuItemExit_OnAction(ActionEvent actionEvent) {
+        Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to exit?", ButtonType.YES, ButtonType.NO).showAndWait();
+        if (option.get() == ButtonType.YES) {
+            ((Stage) txtEditor.getScene().getWindow()).close();
+        }
+    }
+
     public void mnuItemOpen_OnAction(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open File");
@@ -311,6 +349,7 @@ public class EditorFormController {
 
         if (file == null) return;
 
+        prop.setProperty("saved.dir", file.getAbsolutePath());
         txtEditor.clear();
         try (FileReader fileReader = new FileReader(file);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
@@ -327,9 +366,28 @@ public class EditorFormController {
     }
 
     public void mnuItemSave_OnAction(ActionEvent actionEvent) {
+
+        File savedFile =prop.getProperty("saved.dir")==null?null: new File(prop.getProperty("saved.dir"));
+
+        if (prop.getProperty("saved.dir")==null || !savedFile.exists()) {
+            saveAsNewFile();
+            return;
+        }
+
+        try (FileWriter fw = new FileWriter(savedFile);
+             BufferedWriter bw = new BufferedWriter(fw)) {
+
+            bw.write(txtEditor.getText());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void mnuItemSaveAs_OnAction(ActionEvent actionEvent) {
+        saveAsNewFile();
+    }
+
+    private void saveAsNewFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save File");
         File file = fileChooser.showSaveDialog(txtEditor.getScene().getWindow());
