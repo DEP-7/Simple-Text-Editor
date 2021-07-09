@@ -42,9 +42,10 @@ public class EditorFormController {
     public Label lblCaretLocation;
     public Label lblWordCount;
     public VBox pneVBox;
+    public MenuBar mnuBar;
     private int findOffset = -1;
     private PrinterJob printerJob;
-    Properties prop;
+    private Properties prop;
 
     public void initialize() {
         pneFind.setVisible(false);
@@ -424,6 +425,10 @@ public class EditorFormController {
 
     public void mnuWordWrap_OnAction(ActionEvent actionEvent) {
         txtEditor.setWrapText(!txtEditor.isWrapText());
+    }
+
+    public void mnuAppearance_OnAction(ActionEvent actionEvent) {
+        loadForm("Appearance");
     }
 }
 
