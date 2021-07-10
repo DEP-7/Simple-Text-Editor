@@ -1,6 +1,5 @@
 package controller;
 
-import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -17,7 +16,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.Duration;
 import util.FXUtil;
 
@@ -26,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -93,53 +92,23 @@ public class EditorFormController {
             }
         });
 
-        Platform.runLater(() -> {
-            Window window = txtEditor.getScene().getWindow();
-
-            window.setOnCloseRequest(event -> {
-                prop.setProperty("xpos", window.getX()+"");
-                prop.setProperty("ypos", window.getY()+"");
-                prop.setProperty("width", window.getWidth()+"");
-                prop.setProperty("height", window.getHeight()+"");
-                /*Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to exit?", ButtonType.YES, ButtonType.NO).showAndWait();
-
-                if (option.get() == ButtonType.NO) {
-                    event.consume();
-                }*/
-                File appSettings = new File("Simple Text Editor.properties");
-
-                try (FileWriter fw = new FileWriter(appSettings);
-                     final BufferedWriter bw = new BufferedWriter(fw)) {
-
-                    prop.store(bw,"");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-
-            loadAllPreferences();
-        });
-
+        initializePreferences();
     }
 
-    private void loadAllPreferences() {
-        File appSettings = new File("Simple Text Editor.properties");
+    private void initializePreferences() {
+        String backgroundColor = Preferences.userRoot().node("Simple-Text-Editor").get("backgroundColor", "FFFFFF");
 
-        try (FileReader fr = new FileReader(appSettings);
-             BufferedReader br = new BufferedReader(fr)) {
-            prop.load(br);
+        tbStatusBar.setStyle("-fx-background-color:#" + backgroundColor + ";");
+        mnuBar.setStyle("-fx-background-color:#" + backgroundColor + ";");
 
-            Window window = txtEditor.getScene().getWindow();
-            window.setX(Double.parseDouble(prop.getProperty("xpos")));
-            window.setY(Double.parseDouble(prop.getProperty("ypos")));
-            window.setHeight(Double.parseDouble(prop.getProperty("height")));
-            window.setWidth(Double.parseDouble(prop.getProperty("width")));
+        txtEditor.setStyle(Preferences.userRoot().node("Simple-Text-Editor").get("editorStyles", ""));
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        String textStyles = Preferences.userRoot().node("Simple-Text-Editor").get("menuAndStatusBarTextColorStyle", "");
+        if (textStyles != "") {
+            tbStatusBar.getStylesheets().add(textStyles);
+            mnuBar.getStylesheets().add(textStyles);
         }
     }
-
 
     private void setWordCount() {
         String text = txtEditor.getText().isEmpty() ? "0 Words, " : txtEditor.getText().split("[\\n\\s]+").length + " Words, ";
@@ -358,9 +327,9 @@ public class EditorFormController {
         try (FileReader fileReader = new FileReader(file);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
 
-            String line=null;
+            String line = null;
             while ((line = bufferedReader.readLine()) != null) {
-                txtEditor.appendText(line+'\n');
+                txtEditor.appendText(line + '\n');
             }
 
         } catch (IOException e) {
@@ -371,9 +340,9 @@ public class EditorFormController {
 
     public void mnuItemSave_OnAction(ActionEvent actionEvent) {
 
-        File savedFile =prop.getProperty("saved.dir")==null?null: new File(prop.getProperty("saved.dir"));
+        File savedFile = prop.getProperty("saved.dir") == null ? null : new File(prop.getProperty("saved.dir"));
 
-        if (prop.getProperty("saved.dir")==null || !savedFile.exists()) {
+        if (prop.getProperty("saved.dir") == null || !savedFile.exists()) {
             saveAsNewFile();
             return;
         }
@@ -396,7 +365,7 @@ public class EditorFormController {
         fileChooser.setTitle("Save File");
         File file = fileChooser.showSaveDialog(txtEditor.getScene().getWindow());
 
-        if (file==null)return;
+        if (file == null) return;
 
         try (FileWriter fw = new FileWriter(file);
              BufferedWriter bw = new BufferedWriter(fw)) {
@@ -420,7 +389,7 @@ public class EditorFormController {
 
     public void mnuItemStatusBar_OnAction(ActionEvent actionEvent) {
         tbStatusBar.setVisible(!tbStatusBar.isVisible());
-        AnchorPane.setBottomAnchor(txtEditor,tbStatusBar.isVisible()?40.0:0.0);
+        AnchorPane.setBottomAnchor(txtEditor, tbStatusBar.isVisible() ? 40.0 : 0.0);
     }
 
     public void mnuWordWrap_OnAction(ActionEvent actionEvent) {
