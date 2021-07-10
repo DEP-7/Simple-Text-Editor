@@ -51,14 +51,6 @@ public class AppInitializer extends Application {
             }
         }
 
-        primaryStage.setOnCloseRequest(event -> {
-            Preferences.userRoot().node("Simple-Text-Editor").putDouble("posX", primaryStage.getX());
-            Preferences.userRoot().node("Simple-Text-Editor").putDouble("posY", primaryStage.getY());
-            Preferences.userRoot().node("Simple-Text-Editor").putDouble("width", primaryStage.getWidth());
-            Preferences.userRoot().node("Simple-Text-Editor").putDouble("height", primaryStage.getHeight() - 37);
-
-        });
-
         primaryStage.show();
     }
 }

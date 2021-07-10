@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -23,7 +22,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,7 +42,10 @@ public class EditorFormController {
     public MenuBar mnuBar;
     private int findOffset = -1;
     private PrinterJob printerJob;
-    private Properties prop;
+    private AnchorPane root;
+    private Stage childStage;
+    private boolean changeDetected = false;
+    private Stage primaryStage;
 
     public void initialize() {
         pneFind.setVisible(false);
@@ -52,7 +53,6 @@ public class EditorFormController {
         pneVBox.setVisible(false);
 
         printerJob = PrinterJob.createPrinterJob();
-        prop = new Properties();
 
         setWordCount();
 
@@ -79,6 +79,7 @@ public class EditorFormController {
 
         txtEditor.textProperty().addListener(observable -> {
             setWordCount();
+            changeDetected = true;
         });
 
         txtEditor.focusedProperty().addListener((observable, oldValue, newValue) -> {
@@ -90,6 +91,28 @@ public class EditorFormController {
                     showSearchBar(children);
                 }
             }
+        });
+
+        Platform.runLater(() -> {
+            primaryStage = (Stage) txtEditor.getScene().getWindow();
+            primaryStage.setOnCloseRequest(event -> {
+                Preferences.userRoot().node("Simple-Text-Editor").putDouble("posX", primaryStage.getX());
+                Preferences.userRoot().node("Simple-Text-Editor").putDouble("posY", primaryStage.getY());
+                Preferences.userRoot().node("Simple-Text-Editor").putDouble("width", primaryStage.getWidth());
+                Preferences.userRoot().node("Simple-Text-Editor").putDouble("height", primaryStage.getHeight() - 37);
+                Preferences.userRoot().node("Simple-Text-Editor").put("savedLocation", "");
+
+                if (changeDetected) {
+                    ButtonType save = new ButtonType("Save");
+                    ButtonType dontSave = new ButtonType("Don't Save");
+                    Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to save changes to " + primaryStage.getTitle() + "?", save, dontSave, ButtonType.CANCEL).showAndWait();
+                    if (option.get() == save) {
+                        saveFile();
+                    } else if (option.get() == ButtonType.CANCEL) {
+                        event.consume();
+                    }
+                }
+            });
         });
 
         initializePreferences();
@@ -260,8 +283,8 @@ public class EditorFormController {
 
     private void loadForm(String formName) {
         try {
-            Stage childStage = new Stage();
-            Parent root = FXMLLoader.load(this.getClass().getResource("../view/" + formName + "Form.fxml"));
+            childStage = new Stage();
+            root = FXMLLoader.load(this.getClass().getResource("../view/" + formName + "Form.fxml"));
             Scene childScene = new Scene(root);
             EditorFormController ctrl = (EditorFormController) txtEditor.getScene().getUserData();
             childScene.setUserData(ctrl);
@@ -298,22 +321,42 @@ public class EditorFormController {
     }
 
     public void mnuItemNew_OnAction(ActionEvent actionEvent) {
-        Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to get new page?", ButtonType.YES, ButtonType.NO).showAndWait();
-        if (option.get() == ButtonType.YES) {
-            txtEditor.clear();
+        if (changeDetected) {
+            ButtonType save = new ButtonType("Save");
+            ButtonType dontSave = new ButtonType("Don't Save");
+            Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to save changes to " + primaryStage.getTitle() + "?", save, dontSave, ButtonType.CANCEL).showAndWait();
+            if (option.get() == save) {
+                saveFile();
+            } else if (option.get() == ButtonType.CANCEL) {
+                return;
+            }
         }
-        prop.setProperty("saved.dir", "null");
+
+        txtEditor.clear();
+        Preferences.userRoot().node("Simple-Text-Editor").put("savedLocation", "");
         txtEditor.requestFocus();
+        changeDetected = false;
     }
 
     public void mnuItemExit_OnAction(ActionEvent actionEvent) {
         Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to exit?", ButtonType.YES, ButtonType.NO).showAndWait();
         if (option.get() == ButtonType.YES) {
-            ((Stage) txtEditor.getScene().getWindow()).close();
+            primaryStage.close();
         }
     }
 
     public void mnuItemOpen_OnAction(ActionEvent actionEvent) {
+        if (changeDetected) {
+            ButtonType save = new ButtonType("Save");
+            ButtonType dontSave = new ButtonType("Don't Save");
+            Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to save changes to " + primaryStage.getTitle() + "?", save, dontSave, ButtonType.CANCEL).showAndWait();
+            if (option.get() == save) {
+                saveFile();
+            } else if (option.get() == ButtonType.CANCEL) {
+                return;
+            }
+        }
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All Text Files", "*.txt", "*.html"));
@@ -322,16 +365,22 @@ public class EditorFormController {
 
         if (file == null) return;
 
-        prop.setProperty("saved.dir", file.getAbsolutePath());
+        Preferences.userRoot().node("Simple-Text-Editor").put("savedLocation", file.getAbsolutePath());
         txtEditor.clear();
         try (FileReader fileReader = new FileReader(file);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
 
-            String line = null;
+            String line;
+            boolean isFirstLine = true;
             while ((line = bufferedReader.readLine()) != null) {
-                txtEditor.appendText(line + '\n');
+                if (isFirstLine) {
+                    txtEditor.appendText(line);
+                } else {
+                    txtEditor.appendText('\n' + line);
+                }
             }
 
+            changeDetected = false;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -339,11 +388,15 @@ public class EditorFormController {
     }
 
     public void mnuItemSave_OnAction(ActionEvent actionEvent) {
+        saveFile();
+    }
 
-        File savedFile = prop.getProperty("saved.dir") == null ? null : new File(prop.getProperty("saved.dir"));
+    private void saveFile() {
+        String savedLocation = Preferences.userRoot().node("Simple-Text-Editor").get("savedLocation", "");
+        File savedFile = new File(savedLocation);
 
-        if (prop.getProperty("saved.dir") == null || !savedFile.exists()) {
-            saveAsNewFile();
+        if (savedLocation.equals("") || !savedFile.exists()) {
+            saveAsNewFile("Save");
             return;
         }
 
@@ -351,18 +404,19 @@ public class EditorFormController {
              BufferedWriter bw = new BufferedWriter(fw)) {
 
             bw.write(txtEditor.getText());
+            changeDetected = false;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void mnuItemSaveAs_OnAction(ActionEvent actionEvent) {
-        saveAsNewFile();
+        saveAsNewFile("Save As");
     }
 
-    private void saveAsNewFile() {
+    private void saveAsNewFile(String title) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save File");
+        fileChooser.setTitle(title);
         File file = fileChooser.showSaveDialog(txtEditor.getScene().getWindow());
 
         if (file == null) return;
@@ -371,6 +425,8 @@ public class EditorFormController {
              BufferedWriter bw = new BufferedWriter(fw)) {
 
             bw.write(txtEditor.getText());
+            changeDetected = false;
+            Preferences.userRoot().node("Simple-Text-Editor").put("savedLocation", file.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }

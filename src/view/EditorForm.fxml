@@ -50,8 +50,14 @@
           </Menu>
           <Menu text="_Edit">
             <items>
-                  <MenuItem mnemonicParsing="false" onAction="#mnuItemUndo_OnAction" text="Undo" />
-                  <MenuItem mnemonicParsing="false" onAction="#mnuItemRedo_OnAction" text="Redo" />
+                  <MenuItem mnemonicParsing="false" onAction="#mnuItemUndo_OnAction" text="Undo">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#mnuItemRedo_OnAction" text="Redo">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
               <MenuItem mnemonicParsing="false" onAction="#mnuItemCut_OnAction" text="Cut">
                      <accelerator>
@@ -87,14 +93,14 @@
                   <SeparatorMenuItem mnemonicParsing="false" />
             </items>
           </Menu>
-            <Menu mnemonicParsing="false" text="Format">
+            <Menu mnemonicParsing="false" text="F_ormat">
               <items>
                   <CheckMenuItem mnemonicParsing="false" onAction="#mnuWordWrap_OnAction" text="Word Wrap" />
                   <MenuItem onAction="#mnuFont_OnAction" text="Font" />
                   <MenuItem onAction="#mnuAppearance_OnAction" text="Appearance" />
               </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="View">
+            <Menu mnemonicParsing="false" text="_View">
               <items>
                   <CheckMenuItem mnemonicParsing="false" onAction="#mnuItemStatusBar_OnAction" selected="true" text="Status Bar" />
               </items>
@@ -106,7 +112,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <TextArea fx:id="txtEditor" layoutX="60.0" layoutY="70.0" prefHeight="200.0" prefWidth="200.0" text="package controller;&#10;&#10;import javafx.animation.TranslateTransition;&#10;import javafx.collections.ObservableList;&#10;import javafx.event.ActionEvent;&#10;import javafx.scene.Node;&#10;import javafx.scene.control.Label;&#10;import javafx.scene.control.TextArea;&#10;import javafx.scene.control.TextField;&#10;import javafx.scene.layout.AnchorPane;&#10;import javafx.scene.layout.VBox;&#10;import javafx.scene.paint.Color;&#10;import javafx.util.Duration;&#10;import util.FXUtil;&#10;&#10;import java.util.ArrayList;&#10;import java.util.List;&#10;import java.util.regex.Matcher;&#10;import java.util.regex.Pattern;&#10;import java.util.regex.PatternSyntaxException;&#10;&#10;public class EditorFormController {&#10;    private final List&lt;Index&gt; searchList = new ArrayList&lt;&gt;();&#10;    public AnchorPane pneReplace;&#10;    public AnchorPane pneFind;&#10;    public TextField txtSearchForReplace;&#10;    public TextField txtReplace;&#10;    public TextField txtSearch;&#10;    public TextArea txtEditor;&#10;    public Label lblCaretLocation;&#10;    public Label lblWordCount;&#10;    public VBox pneVBox;&#10;    private int findOffset = -1;&#10;&#10;    public void initialize() {&#10;        pneFind.setVisible(false);&#10;        pneReplace.setVisible(false);&#10;&#10;        setWordCount();&#10;" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0">
+      <TextArea fx:id="txtEditor" layoutX="60.0" layoutY="70.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0">
          <font>
             <Font size="14.0" />
          </font></TextArea>
