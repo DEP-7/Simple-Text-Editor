@@ -40,10 +40,9 @@ public class EditorFormController {
     public Label lblWordCount;
     public VBox pneVBox;
     public MenuBar mnuBar;
+    public Label lblSearchCount;
     private int findOffset = -1;
     private PrinterJob printerJob;
-    private AnchorPane root;
-    private Stage childStage;
     private boolean changeDetected = false;
     private Stage primaryStage;
 
@@ -120,11 +119,11 @@ public class EditorFormController {
 
     private void initializePreferences() {
         String backgroundColor = Preferences.userRoot().node("Simple-Text-Editor").get("backgroundColor", "FFFFFF");
+        String fontColor = Preferences.userRoot().node("Simple-Text-Editor").get("fontColor", "000000");
 
         tbStatusBar.setStyle("-fx-background-color:#" + backgroundColor + ";");
         mnuBar.setStyle("-fx-background-color:#" + backgroundColor + ";");
-
-        txtEditor.setStyle(Preferences.userRoot().node("Simple-Text-Editor").get("editorStyles", ""));
+        txtEditor.setStyle("-fx-text-fill:#" + fontColor + ";" + "-fx-base:#" + backgroundColor + ";");
 
         String textStyles = Preferences.userRoot().node("Simple-Text-Editor").get("menuAndStatusBarTextColorStyle", "");
         if (textStyles != "") {
@@ -139,11 +138,18 @@ public class EditorFormController {
         lblWordCount.setText(text);
     }
 
-    private void findAll(String newValue) {
-        FXUtil.highlightOnTextArea(txtEditor, newValue, Color.web("yellow", 0.8));
+    private void findAll(String value) {
+        FXUtil.highlightOnTextArea(txtEditor, value, Color.web("yellow", 0.8));
+
+        if (value.isEmpty()) {
+            findOffset = -1;
+            searchList.clear();
+            lblSearchCount.setText("Search here to find");
+            return;
+        }
 
         try {
-            Pattern regExp = Pattern.compile(newValue);
+            Pattern regExp = Pattern.compile(value);
             Matcher matcher = regExp.matcher(txtEditor.getText());
 
             searchList.clear();
@@ -158,6 +164,8 @@ public class EditorFormController {
                     break;
                 }
             }
+
+            lblSearchCount.setText(searchList.size()+" results found");
         } catch (PatternSyntaxException e) {
         }
     }
@@ -211,10 +219,20 @@ public class EditorFormController {
 
     public void btnFindNext_OnAction(ActionEvent actionEvent) {
         forwardSearch(true);
+        if (!txtEditor.getSelectedText().isEmpty()) {
+            lblSearchCount.setText((findOffset+1)+" of "+searchList.size());
+        }else{
+            lblSearchCount.setText(searchList.size()+"");
+        }
     }
 
     public void btnFindPrevious_OnAction(ActionEvent actionEvent) {
         forwardSearch(false);
+        if (!txtEditor.getSelectedText().isEmpty()) {
+            lblSearchCount.setText((findOffset+1)+" of "+searchList.size());
+        }else{
+            lblSearchCount.setText(searchList.size()+"");
+        }
     }
 
     public void btnFind_OnAction(ActionEvent actionEvent) {
@@ -283,8 +301,8 @@ public class EditorFormController {
 
     private void loadForm(String formName) {
         try {
-            childStage = new Stage();
-            root = FXMLLoader.load(this.getClass().getResource("../view/" + formName + "Form.fxml"));
+            Stage childStage = new Stage();
+            AnchorPane root = FXMLLoader.load(this.getClass().getResource("../view/" + formName + "Form.fxml"));
             Scene childScene = new Scene(root);
             EditorFormController ctrl = (EditorFormController) txtEditor.getScene().getUserData();
             childScene.setUserData(ctrl);
@@ -326,7 +344,9 @@ public class EditorFormController {
             ButtonType dontSave = new ButtonType("Don't Save");
             Optional<ButtonType> option = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to save changes to " + primaryStage.getTitle() + "?", save, dontSave, ButtonType.CANCEL).showAndWait();
             if (option.get() == save) {
-                saveFile();
+                if (!saveFile()) {
+                    return;
+                }
             } else if (option.get() == ButtonType.CANCEL) {
                 return;
             }
@@ -391,13 +411,12 @@ public class EditorFormController {
         saveFile();
     }
 
-    private void saveFile() {
+    private boolean saveFile() {
         String savedLocation = Preferences.userRoot().node("Simple-Text-Editor").get("savedLocation", "");
         File savedFile = new File(savedLocation);
 
         if (savedLocation.equals("") || !savedFile.exists()) {
-            saveAsNewFile("Save");
-            return;
+            return saveAsNewFile("Save");
         }
 
         try (FileWriter fw = new FileWriter(savedFile);
@@ -405,8 +424,10 @@ public class EditorFormController {
 
             bw.write(txtEditor.getText());
             changeDetected = false;
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -414,12 +435,12 @@ public class EditorFormController {
         saveAsNewFile("Save As");
     }
 
-    private void saveAsNewFile(String title) {
+    private boolean saveAsNewFile(String title) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
         File file = fileChooser.showSaveDialog(txtEditor.getScene().getWindow());
 
-        if (file == null) return;
+        if (file == null) return false;
 
         try (FileWriter fw = new FileWriter(file);
              BufferedWriter bw = new BufferedWriter(fw)) {
@@ -427,8 +448,10 @@ public class EditorFormController {
             bw.write(txtEditor.getText());
             changeDetected = false;
             Preferences.userRoot().node("Simple-Text-Editor").put("savedLocation", file.getAbsolutePath());
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 

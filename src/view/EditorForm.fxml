@@ -138,9 +138,16 @@
          <children>
             <AnchorPane fx:id="pneFind" focusTraversable="true" style="-fx-background-color: grey;">
                <children>
-                  <TextField fx:id="txtSearch" layoutX="32.0" layoutY="17.0" prefWidth="200.0" promptText="Search" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="115.0" AnchorPane.topAnchor="5.0" />
-                  <Button layoutX="212.0" layoutY="17.0" mnemonicParsing="false" onAction="#btnFindNext_OnAction" prefHeight="26.0" prefWidth="50.0" text="↓" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="5.0" />
-                  <Button layoutX="277.0" layoutY="17.0" mnemonicParsing="false" onAction="#btnFindPrevious_OnAction" prefHeight="26.0" prefWidth="50.0" text="↑" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                  <TextField fx:id="txtSearch" layoutX="32.0" layoutY="17.0" prefWidth="200.0" promptText="Search" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="115.0" AnchorPane.topAnchor="5.0" />
+                  <Button layoutX="212.0" layoutY="17.0" mnemonicParsing="false" onAction="#btnFindNext_OnAction" prefHeight="29.0" prefWidth="50.0" text="↓" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="5.0">
+                     <font>
+                        <Font size="20.0" />
+                     </font></Button>
+                  <Button layoutX="277.0" layoutY="17.0" mnemonicParsing="false" onAction="#btnFindPrevious_OnAction" prefHeight="29.0" prefWidth="50.0" text="↑" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                     <font>
+                        <Font size="20.0" />
+                     </font></Button>
+                  <Label fx:id="lblSearchCount" layoutX="5.0" layoutY="32.0" text="0 of 0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="115.0" AnchorPane.topAnchor="32.0" />
                </children>
             </AnchorPane>
          </children></VBox>

@@ -25,7 +25,8 @@ public class FontFormController {
     public TextField txtFontSize;
     public TextField txtSample;
     public TextField txtFont;
-    EditorFormController editorFormController;
+    private EditorFormController editorFormController;
+    private int defaultFontIndex;
 
     public void initialize() {
         Platform.runLater(() -> {
@@ -62,6 +63,8 @@ public class FontFormController {
 
         lstFont.getItems().setAll(fontStyleText);
         lstFont.getSelectionModel().select(Font.getFontNames().indexOf(editorFormController.txtEditor.getFont().getName()));
+        defaultFontIndex = Font.getFontNames().indexOf(editorFormController.txtEditor.getFont().getName());
+        lstFont.scrollTo(defaultFontIndex);
     }
 
     private void loadFontStyles() {
@@ -89,14 +92,25 @@ public class FontFormController {
 
         lstFontSize.getSelectionModel().select(new Integer((int) editorFormController.txtEditor.getFont().getSize()));
         txtFontSize.setText((int) editorFormController.txtEditor.getFont().getSize() + "");
+        lstFontSize.scrollTo(new Integer((int) editorFormController.txtEditor.getFont().getSize()));
     }
 
     public void btnResetFont_OnAction(ActionEvent actionEvent) {
-        lstFontSize.getSelectionModel().select(new Integer(14));
-        lstFontStyle.getSelectionModel().select(0);
+        resetFont();
     }
 
     public void btnResetFont_OnKeyPressed(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ENTER || keyEvent.getCode() == KeyCode.SPACE) {
+            resetFont();
+        }
+    }
+
+    private void resetFont() {
+        lstFontSize.getSelectionModel().select(new Integer(14));
+        lstFontStyle.getSelectionModel().select(0);
+        lstFont.getSelectionModel().select(defaultFontIndex);
+        lstFont.scrollTo(defaultFontIndex);
+        lstFontSize.scrollTo(new Integer(14));
     }
 
     public void btnOk_OnAction(ActionEvent actionEvent) {
