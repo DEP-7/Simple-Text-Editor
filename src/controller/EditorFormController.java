@@ -36,6 +36,8 @@ public class EditorFormController {
     public TextField txtSearchForReplace;
     public TextField txtReplace;
     public TextField txtSearch;
+    public CheckBox chkMatchCase_Replace;
+    public CheckBox chkMatchCase_Find;
     public TextArea txtEditor;
     public ToolBar tbStatusBar;
     public Label lblCaretLocation;
@@ -71,11 +73,11 @@ public class EditorFormController {
         });
 
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-            findAll(newValue);
+            findAll(newValue, chkMatchCase_Find.isSelected());
         });
 
         txtSearchForReplace.textProperty().addListener((observable, oldValue, newValue) -> {
-            findAll(newValue);
+            findAll(newValue, chkMatchCase_Replace.isSelected());
         });
 
         txtEditor.textProperty().addListener(observable -> {
@@ -83,9 +85,17 @@ public class EditorFormController {
             changeDetected = true;
         });
 
+        chkMatchCase_Find.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            findAll(txtSearch.getText(),newValue);
+        });
+
+        chkMatchCase_Replace.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            findAll(txtSearchForReplace.getText(),newValue);
+        });
+
         txtEditor.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                findAll("");
+                findAll("", false);
                 AnchorPane children = (AnchorPane) pneVBox.getChildren().get(0);
 
                 if (children.isVisible()) {
@@ -140,8 +150,12 @@ public class EditorFormController {
         lblWordCount.setText(text);
     }
 
-    private void findAll(String value) {
-        FXUtil.highlightOnTextArea(txtEditor, value, Color.web("yellow", 0.8));
+    private void findAll(String value, boolean matchCase) {
+        if (!matchCase) {
+            value = value.toLowerCase();
+        }
+
+        FXUtil.highlightOnTextArea(txtEditor, value, matchCase, Color.web("yellow", 0.8));
 
         if (value.isEmpty()) {
             findOffset = -1;
@@ -152,7 +166,7 @@ public class EditorFormController {
 
         try {
             Pattern regExp = Pattern.compile(value);
-            Matcher matcher = regExp.matcher(txtEditor.getText());
+            Matcher matcher = regExp.matcher(matchCase ? txtEditor.getText() : txtEditor.getText().toLowerCase());
 
             searchList.clear();
 
@@ -192,7 +206,7 @@ public class EditorFormController {
                 pneVBox.setVisible(true);
                 TextField textField = (TextField) ((AnchorPane) children.get(0)).getChildren().get(0);
                 textField.requestFocus();
-                findAll(textField.getText());
+                findAll(textField.getText(), anchorPane == pneFind ? chkMatchCase_Find.isSelected() : chkMatchCase_Replace.isSelected());
             }
 
             double paneHeight = ((AnchorPane) children.get(0)).getHeight();
@@ -264,7 +278,7 @@ public class EditorFormController {
         String replacedText = txtEditor.getText().substring(0, searchList.get(findOffset).startingIndex) + txtReplace.getText() + txtEditor.getText().substring(searchList.get(findOffset).endIndex);
         txtEditor.setText(replacedText);
         txtEditor.positionCaret(caretPosition);
-        findAll(txtSearchForReplace.getText());
+        findAll(txtSearchForReplace.getText(), chkMatchCase_Replace.isSelected());
         forwardSearch(true);
     }
 
@@ -279,7 +293,7 @@ public class EditorFormController {
         String secondPart = txtEditor.getText().substring(caretPosition).replaceAll(txtSearchForReplace.getText(), txtReplace.getText());
         selectedText = selectedText.replaceAll(txtSearchForReplace.getText(), txtReplace.getText());
         txtEditor.setText(firstPart + secondPart);
-        findAll("");
+        findAll("", false);
 
         if (!selectedText.isEmpty()) {
 

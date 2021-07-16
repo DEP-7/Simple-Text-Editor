@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 public class FXUtil {
 
-    public static void highlightOnTextArea(TextArea textArea, String regex, Color highlight) {
+    public static void highlightOnTextArea(TextArea textArea, String regex, boolean matchCase, Color highlight) {
         Platform.runLater(() -> {
 
             Text text = (Text) textArea.lookup("Text");
@@ -31,7 +31,7 @@ public class FXUtil {
                 fldChildren.setAccessible(true);
                 ObservableList<Node> children = (ObservableList<Node>) fldChildren.get(parent);
                 Canvas canvas = getCanvas(children, text);
-                List<Range> searchResult = getSearchResult(text.getText(), regex);
+                List<Range> searchResult = getSearchResult(matchCase?text.getText():text.getText().toLowerCase(), regex);
                 repaint(canvas, skin, searchResult, highlight);
 
                 text.layoutBoundsProperty().addListener((observable, oldValue, newValue) -> {
