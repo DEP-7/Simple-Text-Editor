@@ -9,6 +9,8 @@ import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -165,7 +167,7 @@ public class EditorFormController {
                 }
             }
 
-            lblSearchCount.setText(searchList.size()+" results found");
+            lblSearchCount.setText(searchList.size() + " results found");
         } catch (PatternSyntaxException e) {
         }
     }
@@ -220,18 +222,18 @@ public class EditorFormController {
     public void btnFindNext_OnAction(ActionEvent actionEvent) {
         forwardSearch(true);
         if (!txtEditor.getSelectedText().isEmpty()) {
-            lblSearchCount.setText((findOffset+1)+" of "+searchList.size());
-        }else{
-            lblSearchCount.setText(searchList.size()+"");
+            lblSearchCount.setText((findOffset + 1) + " of " + searchList.size());
+        } else {
+            lblSearchCount.setText(searchList.size() + "");
         }
     }
 
     public void btnFindPrevious_OnAction(ActionEvent actionEvent) {
         forwardSearch(false);
         if (!txtEditor.getSelectedText().isEmpty()) {
-            lblSearchCount.setText((findOffset+1)+" of "+searchList.size());
-        }else{
-            lblSearchCount.setText(searchList.size()+"");
+            lblSearchCount.setText((findOffset + 1) + " of " + searchList.size());
+        } else {
+            lblSearchCount.setText(searchList.size() + "");
         }
     }
 
@@ -366,6 +368,18 @@ public class EditorFormController {
     }
 
     public void mnuItemOpen_OnAction(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All Text Files", "*.txt", "*.html"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All Files", "*"));
+        File file = fileChooser.showOpenDialog(txtEditor.getScene().getWindow());
+        openFile(file);
+    }
+
+    private void openFile(File file) {
+
+        if (file == null) return;
+
         if (changeDetected) {
             ButtonType save = new ButtonType("Save");
             ButtonType dontSave = new ButtonType("Don't Save");
@@ -376,17 +390,9 @@ public class EditorFormController {
                 return;
             }
         }
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All Text Files", "*.txt", "*.html"));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All Files", "*"));
-        File file = fileChooser.showOpenDialog(txtEditor.getScene().getWindow());
-
-        if (file == null) return;
-
         Preferences.userRoot().node("Simple-Text-Editor").put("savedLocation", file.getAbsolutePath());
         txtEditor.clear();
+
         try (FileReader fileReader = new FileReader(file);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
 
@@ -394,17 +400,16 @@ public class EditorFormController {
             boolean isFirstLine = true;
             while ((line = bufferedReader.readLine()) != null) {
                 if (isFirstLine) {
+                    isFirstLine = false;
                     txtEditor.appendText(line);
                 } else {
                     txtEditor.appendText('\n' + line);
                 }
             }
-
             changeDetected = false;
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void mnuItemSave_OnAction(ActionEvent actionEvent) {
@@ -456,14 +461,24 @@ public class EditorFormController {
     }
 
     public void mnuItemPrint_OnAction(ActionEvent actionEvent) {
-        boolean printDialog = printerJob.showPrintDialog(txtEditor.getScene().getWindow());
-        if (printDialog) {
-            printerJob.printPage(txtEditor.lookup("Text"));
+        try {
+            boolean printDialog = printerJob.showPrintDialog(txtEditor.getScene().getWindow());
+            if (printDialog) {
+                printerJob.printPage(txtEditor.lookup("Text"));
+            }
+        } catch (RuntimeException e) {
+            new Alert(Alert.AlertType.ERROR, "Couldn't find a printer.\nPlease set default printer").show();
+            txtEditor.requestFocus();
         }
     }
 
     public void mnuItemPageSetup_OnAction(ActionEvent actionEvent) {
-        printerJob.showPageSetupDialog(txtEditor.getScene().getWindow());
+        try {
+            printerJob.showPageSetupDialog(primaryStage);
+        } catch (RuntimeException e) {
+            new Alert(Alert.AlertType.ERROR, "Couldn't find a printer.\nPlease set default printer").show();
+            txtEditor.requestFocus();
+        }
     }
 
     public void mnuItemStatusBar_OnAction(ActionEvent actionEvent) {
@@ -477,6 +492,21 @@ public class EditorFormController {
 
     public void mnuAppearance_OnAction(ActionEvent actionEvent) {
         loadForm("Appearance");
+    }
+
+    public void txtEditor_OnDragOver(DragEvent dragEvent) {
+        if (dragEvent.getDragboard().hasFiles()) {
+            dragEvent.acceptTransferModes(TransferMode.ANY);
+            dragEvent.consume();
+        }
+    }
+
+    public void txtEditor_OnDragDropped(DragEvent dragEvent) {
+        if (dragEvent.getDragboard().hasFiles()) {
+            File file = dragEvent.getDragboard().getFiles().get(0);
+            openFile(file);
+            dragEvent.setDropCompleted(true);
+        }
     }
 }
 

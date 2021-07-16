@@ -112,7 +112,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <TextArea fx:id="txtEditor" layoutX="60.0" layoutY="70.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0">
+      <TextArea fx:id="txtEditor" layoutX="60.0" layoutY="70.0" onDragDropped="#txtEditor_OnDragDropped" onDragOver="#txtEditor_OnDragOver" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0">
          <font>
             <Font size="14.0" />
          </font></TextArea>
