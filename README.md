@@ -1,6 +1,9 @@
 # Simple Text Editor
 
 A simple text editor developed with the guidance of Mr. Ranjith Suranga.
+
+![img1](./src/view/assets/Text_Editor.png)
+
 ### How to use this repo?
 
 1. Clone the repository first
@@ -12,6 +15,8 @@ A simple text editor developed with the guidance of Mr. Ranjith Suranga.
 3. Build and Run!
 
 ### Features
+
+![img1](./src/view/assets/Text_Editor-All_Options.png)
 
 * Common options including create new file, open recent file, drag and drop opening, Save and Save as, page setup, Print... etc. are available
   

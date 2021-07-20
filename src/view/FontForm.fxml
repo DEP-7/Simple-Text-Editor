@@ -9,6 +9,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<!--
+  ~ Copyright (c) Dhanushka Chandimal. All rights reserved.
+  ~ Licensed under the MIT License. See License in the project root for license information.
+  -->
+
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="367.0" prefWidth="415.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.FontFormController">
    <children>
       <HBox layoutX="141.0" layoutY="71.0" spacing="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="15.0">

@@ -4,6 +4,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
+<!--
+  ~ Copyright (c) Dhanushka Chandimal. All rights reserved.
+  ~ Licensed under the MIT License. See License in the project root for license information.
+  -->
+
 <AnchorPane fx:id="pneAbout" prefHeight="329.0" prefWidth="284.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AboutFormController">
    <children>
       <Label alignment="TOP_LEFT" layoutX="11.0" layoutY="69.0" prefHeight="245.0" prefWidth="254.0" text="Simple Text Editor version 1.0.0&#10;&#10;Copyright © 2021 Dhanushka Chandimal All rights reserved.&#10;&#10;&#10;&#10;This product is licensed under MIT license.&#10;Visit https://github.com/DEP-7/Simple-Text-Editor.git for more information." wrapText="true" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="70.0" />
